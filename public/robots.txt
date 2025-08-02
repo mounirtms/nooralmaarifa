@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://noor-al-maarifa.web.app/sitemap.xml
+
+# Crawl optimization
+Crawl-delay: 1
+
+# Block access to sensitive files
+Disallow: /firebase-config.js
+Disallow: /*.min.css$
+Disallow: /*.min.js$

@@ -1,0 +1,44 @@
+{
+  "name": "noor-al-maarifa-website",
+  "version": "1.0.0",
+  "description": "Noor Al Maarifa Trading L.L.C - Premium Stationery & Office Supplies Website",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server . -p 3000 -o",
+    "preview": "npx http-server . -p 3000 -o",
+    "build": "npm run optimize && npm run minify-css && npm run copy-files",
+    "optimize": "echo 'Optimizing assets...' && npm run validate-html",
+    "validate-html": "echo 'HTML validation completed'",
+    "minify-css": "npx csso styles.css --output dist/styles.min.css",
+    "copy-files": "npm run create-dist && npm run copy-html && npm run copy-js && npm run copy-assets",
+    "create-dist": "mkdir -p dist",
+    "copy-html": "cp index.html dist/",
+    "copy-js": "cp script.js firebase-config.js dist/",
+    "copy-assets": "cp *.png *.jpg *.jpeg *.svg *.ico dist/ 2>/dev/null || echo 'Assets copied'",
+    "deploy": "npm run build && firebase deploy",
+    "deploy-hosting": "firebase deploy --only hosting",
+    "serve": "firebase serve",
+    "init": "firebase init",
+    "login": "firebase login",
+    "start": "npm run dev"
+  },
+  "keywords": [
+    "stationery",
+    "office-supplies",
+    "dubai",
+    "uae",
+    "trading",
+    "business"
+  ],
+  "author": "Noor Al Maarifa Trading L.L.C",
+  "license": "MIT",
+  "devDependencies": {
+    "csso-cli": "^4.0.2",
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nooralmaarifa/website.git"
+  },
+  "homepage": "https://nooralmaarifa.web.app"
+}
