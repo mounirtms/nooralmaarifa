@@ -100,20 +100,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Temporary Firebase submission function (to be replaced with actual Firebase)
+    // Firebase submission function
     async function submitToFirebase(formData) {
-        // For now, we'll simulate the submission
-        // This will be replaced with actual Firebase integration
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate success/failure
-                if (Math.random() > 0.1) { // 90% success rate
-                    resolve({ success: true, id: 'temp_' + Date.now() });
-                } else {
-                    reject(new Error('Simulated network error'));
-                }
-            }, 1500);
-        });
+        try {
+            // Check if Firebase is available
+            if (typeof window.db !== 'undefined' && window.db) {
+                // Submit to Firebase Firestore
+                const docRef = await window.db.collection('contact-messages').add({
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone || '',
+                    message: formData.message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'new',
+                    userAgent: formData.userAgent,
+                    language: formData.language
+                });
+                return { success: true, id: docRef.id };
+            } else {
+                // Fallback: store in localStorage for development
+                const messages = JSON.parse(localStorage.getItem('contact-messages') || '[]');
+                const newMessage = {
+                    ...formData,
+                    id: 'msg_' + Date.now(),
+                    status: 'new'
+                };
+                messages.push(newMessage);
+                localStorage.setItem('contact-messages', JSON.stringify(messages));
+                console.log('Message stored locally:', newMessage);
+                return { success: true, id: newMessage.id };
+            }
+        } catch (error) {
+            console.error('Firebase submission error:', error);
+            throw error;
+        }
     }
 
     // Product card animations on scroll
