@@ -63,6 +63,22 @@ window.addEventListener('load', function() {
     let allMessages = [];
     let currentFilter = 'all';
 
+      // Scroll-to-top button script
+      const moveUpButton = document.getElementById('moveUpButton');
+      document.addEventListener('scroll', function () {
+          if (window.scrollY > 300) {
+              moveUpButton.style.display = 'block';
+          } else {
+              moveUpButton.style.display = 'none';
+          }
+      });
+      moveUpButton.addEventListener('click', () => {
+          window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+          });
+      });
+
     // Bilingual messages
     const messages = {
         en: {
@@ -217,21 +233,26 @@ window.addEventListener('load', function() {
 
     // Function to check user sign-in status and update UI accordingly
     function updateUIForUser(user) {
+        console.log('updateUIForUser called with:', user ? user.email : 'null');
         if (user) {
             currentUser = user;
-const headerSignInBtn = document.getElementById('adminSignInBtn');
+            const headerSignInBtn = document.getElementById('adminSignInBtn');
             if (headerSignInBtn) headerSignInBtn.style.display = 'none';
             const headerUserInfo = document.getElementById('userInfo');
             const headerUserPhoto = document.getElementById('userPhoto');
             const headerUserName = document.getElementById('userName');
             if (headerUserInfo) headerUserInfo.style.display = 'flex';
-            if (headerUserPhoto) headerUserPhoto.src = user.photoURL || '';
-            if (headerUserName) headerUserName.textContent = user.displayName || '';
+            if (headerUserPhoto) headerUserPhoto.src = user.photoURL || 'images/LOGOICON.png';
+            if (headerUserName) headerUserName.textContent = user.displayName || user.email.split('@')[0];
 
             if (window.isAdmin && window.isAdmin(user)) {
-                if (adminSection) adminSection.style.display = 'block';
+                console.log('User is admin, setting up admin UI');
+                // Don't automatically show admin section, let user click to open it
                 if (adminPanelBtn) adminPanelBtn.style.display = 'block';
+                loadGalleryImages();
+                loadContactMessages();
             } else {
+                console.log('User is not admin');
                 if (adminSection) adminSection.style.display = 'none';
                 if (adminPanelBtn) adminPanelBtn.style.display = 'none';
             }
@@ -251,19 +272,22 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
         auth.onAuthStateChanged(updateUIForUser);
     }
 
-    // Password visibility toggle
-    passwordToggle.addEventListener('click', () => {
-        if (adminPassword.type === 'password') {
-            adminPassword.type = 'text';
-            passwordToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
-        } else {
-            adminPassword.type = 'password';
-            passwordToggle.innerHTML = '<i class="fas fa-eye"></i>';
-        }
-    });
+    // Password visibility toggle (null check)
+    if (passwordToggle && adminPassword) {
+        passwordToggle.addEventListener('click', () => {
+            if (adminPassword.type === 'password') {
+                adminPassword.type = 'text';
+                passwordToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                adminPassword.type = 'password';
+                passwordToggle.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        });
+    }
 
-    // Admin login submission
-    adminLoginForm.addEventListener('submit', async (e) => {
+    // Admin login submission (null check)
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         // Loading state
@@ -284,7 +308,8 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
         // Reset loading state
         adminLoginSubmit.querySelector('.btn-text').style.display = 'inline-flex';
         adminLoginSubmit.querySelector('.btn-loading').style.display = 'none';
-    });
+        });
+    }
 
     // Sign Out (handled in firebase-config.js for header)
 
@@ -350,45 +375,100 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
 
             try {
                 await Promise.all(uploadPromises);
-                uploadStatus.textContent = 'Images uploaded successfully! | تم تحميل الصور بنجاح!';
+                showAdminStatus('success', 'Images uploaded successfully! | تم تحميل الصور بنجاح!');
                 loadGalleryImages();
             } catch (error) {
-                uploadStatus.textContent = 'Some images failed to upload. | فشل تحميل بعض الصور.';
+                showAdminStatus('error', 'Some images failed to upload. | فشل تحميل بعض الصور.');
             }
 
             uploadProgress.style.display = 'none';
         });
     }
 
-    // Function to load gallery images
-    function loadGalleryImages() {
-        galleryLoading.style.display = 'block';
-        noImagesMessage.style.display = 'none';
-        galleryGrid.innerHTML = '';
-
-        db.collection('gallery').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
-            galleryLoading.style.display = 'none';
-            if (querySnapshot.empty) {
-                noImagesMessage.style.display = 'block';
-                return;
+    // --- ENHANCED IMAGE UPLOAD: Drag & Drop Support ---
+    const uploadDropArea = document.getElementById('uploadDropArea');
+    if (uploadDropArea && imageFiles) {
+        uploadDropArea.addEventListener('click', () => imageFiles.click());
+        uploadDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadDropArea.classList.add('dragover');
+        });
+        uploadDropArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadDropArea.classList.remove('dragover');
+        });
+        uploadDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadDropArea.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length) {
+                imageFiles.files = e.dataTransfer.files;
             }
+        });
+    }
 
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const imageItem = document.createElement('div');
-                imageItem.classList.add('gallery-item');
-                imageItem.innerHTML = `
-                    <img src="${data.url}" alt="${data.title || 'Gallery Image'}" class="gallery-img">
-                    <h4>${data.title || ''}</h4>
-                    <p>${data.description || ''}</p>
-                `;
-                imageItem.addEventListener('click', () => {
-                    openImageModal(data, doc.id);
-                });
-                galleryGrid.appendChild(imageItem);
-            });
-        }).catch((error) => {
-            console.error('Error loading gallery images:', error);
+    // Admin status feedback (slick fade-in/out and DRY)
+    window.setupFeedback = function(type, message, element) {
+        if (!element) return;
+        element.setAttribute('role', 'status');
+        element.setAttribute('aria-live', 'polite');
+        element.className = type === 'success' ? 'success-message' : 'error-message';
+        element.textContent = message;
+        element.style.display = 'block';
+        element.style.opacity = 0;
+        setTimeout(() => { element.style.opacity = 1; }, 10);
+        setTimeout(() => {
+            element.style.opacity = 0;
+            setTimeout(() => { element.style.display = 'none'; }, 400);
+        }, 4000);
+    };
+    window.showAdminStatus = function(type, message) {
+        window.setupFeedback(type, message, uploadStatus);
+        uploadStatus.setAttribute('role', 'status');
+        uploadStatus.setAttribute('aria-live', 'polite');
+        uploadStatus.className = type === 'success' ? 'success-message' : 'error-message';
+        uploadStatus.textContent = message;
+        uploadStatus.style.display = 'block';
+        uploadStatus.style.opacity = 0;
+        uploadStatus.style.transition = 'opacity 0.4s';
+        setTimeout(() => { uploadStatus.style.opacity = 1; }, 10);
+        setTimeout(() => {
+            uploadStatus.style.opacity = 0;
+            setTimeout(() => { uploadStatus.style.display = 'none'; }, 400);
+        }, 4000);
+    };
+
+
+    // --- ENHANCED GALLERY GRID: Card-based, Meta Info, Actions ---
+    function renderGalleryGrid(images) {
+        galleryGrid.innerHTML = '';
+        if (!images.length) {
+            noImagesMessage.style.display = 'block';
+            return;
+        }
+        noImagesMessage.style.display = 'none';
+        images.forEach(img => {
+            const card = document.createElement('div');
+            card.className = 'gallery-card';
+            card.innerHTML = `
+                <div class="gallery-thumb">
+                    <img src="${img.url}" alt="${img.title || 'Gallery Image'}" />
+                </div>
+                <div class="gallery-meta">
+                    <h4>${img.title || ''}</h4>
+                    <p>${img.description || ''}</p>
+                    <div class="gallery-meta-info">
+                        <span class="meta-uploader"><i class="fas fa-user"></i> ${img.uploadedBy || 'N/A'}</span>
+                        <span class="meta-date"><i class="fas fa-calendar"></i> ${img.timestamp ? new Date(img.timestamp.toDate()).toLocaleString() : ''}</span>
+                    </div>
+                </div>
+                <div class="gallery-actions">
+                    <button class="btn btn-secondary view-image-btn"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-danger delete-image-btn"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            card.querySelector('.view-image-btn').addEventListener('click', () => openImageModal(img, img.id));
+            card.querySelector('.delete-image-btn').addEventListener('click', () => showDeleteImageModal(img, img.id));
+            galleryGrid.appendChild(card);
         });
     }
 
@@ -421,11 +501,32 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
         db.collection('gallery').doc(id).delete().then(() => {
             loadGalleryImages();
             imageModal.style.display = 'none';
-            alert('Image deleted successfully! | تم حذف الصورة بنجاح!');
+            showAdminStatus('success', 'Image deleted successfully! | تم حذف الصورة بنجاح!');
         }).catch((error) => {
             console.error('Error deleting image:', error);
         });
     });
+
+    // --- ENHANCED DELETE IMAGE MODAL ---
+    const deleteImageModal = document.getElementById('deleteImageModal');
+    const deleteImageModalClose = document.getElementById('deleteImageModalClose');
+    const confirmDeleteImageBtn = document.getElementById('confirmDeleteImageBtn');
+    const cancelDeleteImageBtn = document.getElementById('cancelDeleteImageBtn');
+    let imageToDelete = null;
+    function showDeleteImageModal(img, id) {
+        imageToDelete = { img, id };
+        deleteImageModal.style.display = 'block';
+    }
+    if (deleteImageModalClose) deleteImageModalClose.onclick = () => { deleteImageModal.style.display = 'none'; };
+    if (cancelDeleteImageBtn) cancelDeleteImageBtn.onclick = () => { deleteImageModal.style.display = 'none'; };
+    if (confirmDeleteImageBtn) confirmDeleteImageBtn.onclick = async () => {
+        if (imageToDelete) {
+            await db.collection('gallery').doc(imageToDelete.id).delete();
+            loadGalleryImages();
+            deleteImageModal.style.display = 'none';
+            showAdminStatus('success', 'Image deleted successfully! | تم حذف الصورة بنجاح!');
+        }
+    };
 
     // Function to check total number of images in gallery
     async function checkTotalImages() {
@@ -438,8 +539,25 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
         }
     }
 
-    // Load Gallery Images on Init
-    loadGalleryImages();
+    // --- ENHANCED GALLERY LOADING ---
+    function loadGalleryImages() {
+        galleryLoading.style.display = 'block';
+        noImagesMessage.style.display = 'none';
+        galleryGrid.innerHTML = '';
+        db.collection('gallery').orderBy('timestamp', 'desc').get().then((querySnapshot) => {
+            galleryLoading.style.display = 'none';
+            const images = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                images.push({ ...data, id: doc.id });
+            });
+            renderGalleryGrid(images);
+        }).catch((error) => {
+            galleryLoading.style.display = 'none';
+            noImagesMessage.style.display = 'block';
+            console.error('Error loading gallery images:', error);
+        });
+    }
 
     // Function to load contact messages
     function loadContactMessages() {
@@ -501,6 +619,67 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
         });
     }
 
+    // --- ENHANCED MESSAGES TABLE: Alternating Rows, Status Badges, Reply Date, Modal ---
+    function renderMessagesTable(messages) {
+        messagesTableBody.innerHTML = '';
+        messages.forEach((data, idx) => {
+            const messageRow = document.createElement('div');
+            messageRow.className = 'table-row' + (idx % 2 === 0 ? ' even-row' : ' odd-row');
+            messageRow.innerHTML = `
+                <div class="table-cell">${data.name}</div>
+                <div class="table-cell">${data.email}</div>
+                <div class="table-cell">${data.phone || '-'}</div>
+                <div class="table-cell">${data.message.length > 40 ? data.message.slice(0, 40) + '...' : data.message}</div>
+                <div class="table-cell">${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : ''}</div>
+                <div class="table-cell"><span class="status-badge status-${data.status}">${data.status}</span></div>
+                <div class="table-cell">${data.replyDate ? new Date(data.replyDate.toDate()).toLocaleString() : '-'}</div>
+                <div class="table-cell">
+                    <button class="btn btn-secondary btn-small view-message-btn"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-success btn-small mark-replied" data-id="${data.id}"><i class="fas fa-reply"></i></button>
+                </div>
+            `;
+            messageRow.querySelector('.view-message-btn').addEventListener('click', () => showMessageDetailsModal(data));
+            messageRow.querySelector('.mark-replied').addEventListener('click', () => markMessageAsReplied(data.id));
+            messagesTableBody.appendChild(messageRow);
+        });
+    }
+
+    // --- MESSAGE DETAILS MODAL ---
+    const messageDetailsModal = document.getElementById('messageDetailsModal');
+    const closeMessageDetailsModal = document.getElementById('closeMessageDetailsModal');
+    const messageDetailsBody = document.getElementById('messageDetailsBody');
+    const markAsRepliedBtn = document.getElementById('markAsRepliedBtn');
+    let currentMessageId = null;
+    function showMessageDetailsModal(data) {
+        currentMessageId = data.id;
+        messageDetailsBody.innerHTML = `
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Phone:</strong> ${data.phone || '-'}</p>
+            <p><strong>Message:</strong><br>${data.message}</p>
+            <p><strong>Date:</strong> ${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : ''}</p>
+            <p><strong>Status:</strong> <span class="status-badge status-${data.status}">${data.status}</span></p>
+            <p><strong>Reply Date:</strong> ${data.replyDate ? new Date(data.replyDate.toDate()).toLocaleString() : '-'}</p>
+        `;
+        messageDetailsModal.style.display = 'block';
+    }
+    if (closeMessageDetailsModal) closeMessageDetailsModal.onclick = () => { messageDetailsModal.style.display = 'none'; };
+    if (markAsRepliedBtn) markAsRepliedBtn.onclick = () => {
+        if (currentMessageId) markMessageAsReplied(currentMessageId);
+        messageDetailsModal.style.display = 'none';
+    };
+    function markMessageAsReplied(id) {
+        db.collection('contact-messages').doc(id).update({
+            status: 'replied',
+            replyDate: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            loadContactMessages();
+            showAdminStatus('success', 'Message marked as replied! | تم تحديد الرسالة كتم الرد عليها!');
+        }).catch(error => {
+            console.error('Error updating message:', error);
+        });
+    }
+
     // Function to handle mark as replied action
     function setupMessageActions() {
         const markRepliedButtons = document.querySelectorAll('.mark-replied');
@@ -511,7 +690,7 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
                     status: 'replied'
                 }).then(() => {
                     loadContactMessages();
-                    alert('Message marked as replied! | تم تحديد الرسالة كتم الرد عليها!');
+                    showAdminStatus('success', 'Message marked as replied! | تم تحديد الرسالة كتم الرد عليها!');
                 }).catch(error => {
                     console.error('Error updating message:', error);
                 });
@@ -593,6 +772,202 @@ const headerSignInBtn = document.getElementById('adminSignInBtn');
         });
     });
 
+    // Admin login toggle functionality
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const adminFormCloseBtn = document.getElementById('adminFormCloseBtn');
+    const footerAdminLoginForm = document.getElementById('footerAdminLoginForm');
+    const footerAdminLoginError = document.getElementById('footerAdminLoginError');
+    
+    if (adminToggleBtn && footerAdminLoginForm) {
+        adminToggleBtn.addEventListener('click', () => {
+            const isFormVisible = footerAdminLoginForm.style.display === 'block';
+            footerAdminLoginForm.style.display = isFormVisible ? 'none' : 'block';
+            
+            if (!isFormVisible) {
+                setTimeout(() => {
+                    footerAdminLoginForm.classList.add('active');
+                }, 10);
+            } else {
+                footerAdminLoginForm.classList.remove('active');
+            }
+        });
+    }
+    
+    if (adminFormCloseBtn && footerAdminLoginForm) {
+        adminFormCloseBtn.addEventListener('click', () => {
+            footerAdminLoginForm.classList.remove('active');
+            setTimeout(() => {
+                footerAdminLoginForm.style.display = 'none';
+            }, 300);
+        });
+    }
+    
+    // Footer admin login form submission
+    if (footerAdminLoginForm) {
+        footerAdminLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('footerAdminEmail').value;
+            const password = document.getElementById('footerAdminPassword').value;
+            const submitBtn = footerAdminLoginForm.querySelector('.admin-login-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline-flex';
+            submitBtn.disabled = true;
+            
+            try {
+                if (window.auth) {
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    
+                    // Check if user is admin
+                    if (window.isAdmin && window.isAdmin(user)) {
+                        updateUIForUser(user);
+                        footerAdminLoginError.style.display = 'none';
+                        
+                        // Hide the login form
+                        footerAdminLoginForm.classList.remove('active');
+                        setTimeout(() => {
+                            footerAdminLoginForm.style.display = 'none';
+                        }, 300);
+                        
+                        // Show admin section
+                        if (adminSection) {
+                            adminSection.style.display = 'block';
+                            adminSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                        
+                        // Load admin data
+                        loadGalleryImages();
+                        loadContactMessages();
+                        
+                        // Clear form
+                        footerAdminLoginForm.reset();
+                    } else {
+                        throw new Error('Access denied. Admin privileges required.');
+                    }
+                } else {
+                    throw new Error('Authentication service not available.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                footerAdminLoginError.textContent = error.message || 'Login failed. Please check your credentials.';
+                footerAdminLoginError.style.display = 'block';
+            }
+            
+            // Reset loading state
+            btnText.style.display = 'inline-flex';
+            btnLoading.style.display = 'none';
+            submitBtn.disabled = false;
+        });
+    }
+    
+    // Close admin login form when clicking outside
+    document.addEventListener('click', (e) => {
+        if (footerAdminLoginForm && footerAdminLoginForm.classList.contains('active')) {
+            if (!footerAdminLoginForm.contains(e.target) && !adminToggleBtn.contains(e.target)) {
+                footerAdminLoginForm.classList.remove('active');
+                setTimeout(() => {
+                    footerAdminLoginForm.style.display = 'none';
+                }, 300);
+            }
+        }
+    });
+    
+    // Enhanced admin panel button functionality
+    if (adminPanelBtn) {
+        adminPanelBtn.addEventListener('click', () => {
+            if (adminSection) {
+                adminSection.style.display = 'block';
+                adminSection.scrollIntoView({ behavior: 'smooth' });
+                loadGalleryImages();
+                loadContactMessages();
+            }
+        });
+    }
+
+    // Header admin sign in button removed - now using footer login only
+
+    // Google Sign In Handler
+    if (googleSignInBtn) {
+        googleSignInBtn.addEventListener('click', async () => {
+            console.log('Google sign in button clicked');
+            try {
+                const result = await auth.signInWithPopup(googleProvider);
+                const user = result.user;
+                console.log('Google sign in successful:', user.email);
+                
+                if (window.isAdmin && window.isAdmin(user)) {
+                    console.log('User is admin, updating UI');
+                    updateUIForUser(user);
+                    if (loginError) loginError.style.display = 'none';
+                    if (adminLoginModal) adminLoginModal.style.display = 'none';
+                } else {
+                    console.log('User is not admin');
+                    await auth.signOut();
+                    if (loginError) {
+                        loginError.textContent = 'Access denied. Admin privileges required. | الوصول مرفوض. مطلوب صلاحيات المدير.';
+                        loginError.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Google sign in error:', error);
+                if (loginError) {
+                    loginError.textContent = error.message || 'Sign in failed. Please try again. | فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.';
+                    loginError.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Close Login Modal
+    if (loginModalClose) {
+        loginModalClose.addEventListener('click', () => {
+            if (adminLoginModal) adminLoginModal.style.display = 'none';
+        });
+    }
+
+    // Sign Out Handler
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                console.log('User signed out successfully');
+                if (userDropdownMenu) userDropdownMenu.classList.remove('show');
+            } catch (error) {
+                console.error('Sign out error:', error);
+            }
+        });
+    }
+
+    // User Dropdown Toggle
+    if (userDropdownBtn && userDropdownMenu) {
+        userDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdownMenu.classList.toggle('show');
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (userDropdownMenu && !userDropdownMenu.contains(e.target) && !userDropdownBtn?.contains(e.target)) {
+            userDropdownMenu.classList.remove('show');
+        }
+    });
+
+    // Close modal when clicking outside
+    if (adminLoginModal) {
+        adminLoginModal.addEventListener('click', (e) => {
+            if (e.target === adminLoginModal) {
+                adminLoginModal.style.display = 'none';
+            }
+        });
+    }
+
     // Load contact messages on Init
     loadContactMessages();
 });
+

@@ -25,7 +25,8 @@ googleProvider.addScope('profile');
 // Admin emails (you can modify this list)
 const ADMIN_EMAILS = [
   'nooralmaarifa22@gmail.com',
-  'mounir.webdev.tms@gmail.com'
+  'mounir.webdev.tms@gmail.com',
+  'admin@tehno-dz.com'
   // Add more admin emails as needed
 ];
 
@@ -46,41 +47,50 @@ window.ADMIN_EMAILS = ADMIN_EMAILS;
 
 // Set up auth state observer for fast loading
 auth.onAuthStateChanged((user) => {
-  // Update header auth elements based on user state
-  const headerSignInBtn = document.getElementById('headerSignInBtn');
-  const headerUserInfo = document.getElementById('headerUserInfo');
-  const headerUserPhoto = document.getElementById('headerUserPhoto');
-  const headerUserName = document.getElementById('headerUserName');
+  console.log('Auth state changed:', user ? 'logged in' : 'logged out');
+
+  // Update header auth elements based on user state (admin sign-in button removed from header)
+  const userInfo = document.getElementById('userInfo');
+  const userPhoto = document.getElementById('userPhoto');
+  const userName = document.getElementById('userName');
   const dropdownUserPhoto = document.getElementById('dropdownUserPhoto');
   const dropdownUserName = document.getElementById('dropdownUserName');
   const dropdownUserEmail = document.getElementById('dropdownUserEmail');
   const dropdownAdminBadge = document.getElementById('dropdownAdminBadge');
   const adminPanelBtn = document.getElementById('adminPanelBtn');
   const adminSection = document.getElementById('adminSection');
+  const adminLoginModal = document.getElementById('adminLoginModal');
 
   if (user) {
-    // User is signed in
-    if (headerSignInBtn) headerSignInBtn.style.display = 'none';
-    if (headerUserInfo) headerUserInfo.style.display = 'flex';
-    if (headerUserPhoto) headerUserPhoto.src = user.photoURL || '';
-    if (headerUserName) headerUserName.textContent = user.displayName || '';
-    if (dropdownUserName) dropdownUserName.textContent = user.displayName || '';
-    if (dropdownUserEmail) dropdownUserEmail.textContent = user.email || '';
+    // User is signed in - only show user info if admin
+    console.log('User logged in:', user.email);
 
     // Check if user is admin
     if (isAdmin(user)) {
-      if (dropdownAdminBadge) dropdownAdminBadge.style.display = 'flex';
+      console.log('User is admin');
+      if (userInfo) userInfo.style.display = 'flex';
+      if (userPhoto) userPhoto.src = user.photoURL || 'images/LOGOICON.png';
+      if (userName) userName.textContent = user.displayName || user.email.split('@')[0];
+      if (dropdownUserPhoto) dropdownUserPhoto.src = user.photoURL || 'images/LOGOICON.png';
+      if (dropdownUserName) dropdownUserName.textContent = user.displayName || user.email.split('@')[0];
+      if (dropdownUserEmail) dropdownUserEmail.textContent = user.email || '';
+      if (dropdownAdminBadge) dropdownAdminBadge.style.display = 'inline-block';
       if (adminPanelBtn) adminPanelBtn.style.display = 'block';
-      if (adminSection) adminSection.style.display = 'block';
+      // Don't auto-show admin section, wait for user interaction
     } else {
+      console.log('User is not admin');
+      if (userInfo) userInfo.style.display = 'none';
       if (dropdownAdminBadge) dropdownAdminBadge.style.display = 'none';
       if (adminPanelBtn) adminPanelBtn.style.display = 'none';
       if (adminSection) adminSection.style.display = 'none';
     }
+
+    // Close login modal if open
+    if (adminLoginModal) adminLoginModal.style.display = 'none';
   } else {
     // User is signed out
-    if (headerSignInBtn) headerSignInBtn.style.display = 'block';
-    if (headerUserInfo) headerUserInfo.style.display = 'none';
+    console.log('User signed out');
+    if (userInfo) userInfo.style.display = 'none';
     if (dropdownAdminBadge) dropdownAdminBadge.style.display = 'none';
     if (adminPanelBtn) adminPanelBtn.style.display = 'none';
     if (adminSection) adminSection.style.display = 'none';
