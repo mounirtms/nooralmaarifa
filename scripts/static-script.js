@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Hide loading spinner when DOM is ready
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    if (loadingSpinner) {
+        loadingSpinner.classList.add('hidden');
+    }
+
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     const header = document.querySelector('header');
