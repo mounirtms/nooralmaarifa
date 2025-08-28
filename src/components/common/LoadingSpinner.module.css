@@ -1,0 +1,147 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.fullScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  min-height: 100vh;
+}
+
+.spinner {
+  position: relative;
+  display: inline-block;
+}
+
+.spinner.small {
+  width: 32px;
+  height: 32px;
+}
+
+.spinner.medium {
+  width: 48px;
+  height: 48px;
+}
+
+.spinner.large {
+  width: 64px;
+  height: 64px;
+}
+
+.spinnerRing {
+  position: absolute;
+  border: 3px solid transparent;
+  border-top: 3px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.small .spinnerRing {
+  width: 32px;
+  height: 32px;
+  border-width: 2px;
+  border-top-width: 2px;
+}
+
+.medium .spinnerRing {
+  width: 48px;
+  height: 48px;
+  border-width: 3px;
+  border-top-width: 3px;
+}
+
+.large .spinnerRing {
+  width: 64px;
+  height: 64px;
+  border-width: 4px;
+  border-top-width: 4px;
+}
+
+.spinnerRing:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.spinnerRing:nth-child(2) {
+  animation-delay: -0.3s;
+  border-top-color: #3b82f6;
+}
+
+.spinnerRing:nth-child(3) {
+  animation-delay: -0.15s;
+  border-top-color: #60a5fa;
+}
+
+.spinnerRing:nth-child(4) {
+  border-top-color: #93c5fd;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.message {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.messageEn {
+  display: block;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.messageAr {
+  display: block;
+  font-family: 'Noto Sans Arabic', 'Cairo', sans-serif;
+  direction: rtl;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .fullScreen {
+    background-color: rgba(17, 24, 39, 0.95);
+  }
+  
+  .message {
+    color: #9ca3af;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .spinnerRing {
+    animation: none;
+    border-top-color: #2563eb;
+  }
+  
+  .spinner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background-color: #2563eb;
+    border-radius: 50%;
+  }
+}

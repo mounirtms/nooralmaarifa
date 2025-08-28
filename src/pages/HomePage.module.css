@@ -1,0 +1,345 @@
+.homePage {
+  width: 100%;
+}
+
+/* Hero Section */
+.heroSection {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: var(--bg-gradient);
+  color: white;
+  position: relative;
+}
+
+.heroContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  width: 100%;
+}
+
+.heroText {
+  max-width: 600px;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.gradientText {
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroTitleArabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  font-size: 2rem;
+  color: var(--accent-gold);
+  margin-bottom: 1.5rem;
+  direction: rtl;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.heroSubtitleArabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+  direction: rtl;
+  line-height: 1.7;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.heroImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroImage img {
+  max-width: 100%;
+  height: auto;
+  max-height: 400px;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+}
+
+/* Common Sections */
+.aboutSection,
+.servicesSection {
+  padding: 6rem 0;
+  background: var(--bg-secondary);
+}
+
+.ctaSection {
+  padding: 6rem 0;
+  background: var(--bg-gradient);
+  color: white;
+  text-align: center;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.sectionSubtitleArabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  color: var(--text-lighter);
+  direction: rtl;
+}
+
+/* Feature Cards */
+.aboutGrid,
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.featureCard,
+.serviceCard {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  transition: var(--transition);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.featureCard:hover,
+.serviceCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
+}
+
+.featureIcon,
+.serviceIcon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--red-primary), var(--red-secondary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+}
+
+.serviceIcon {
+  background: linear-gradient(135deg, var(--yellow-primary), var(--yellow-secondary));
+  color: var(--text-dark);
+}
+
+.featureTitle,
+.serviceTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.featureDescription,
+.serviceDescription {
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.featureDescriptionArabic,
+.serviceDescriptionArabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  color: var(--text-lighter);
+  font-size: 0.9rem;
+  direction: rtl;
+  line-height: 1.7;
+}
+
+.servicesAction {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+/* CTA Section */
+.ctaContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ctaTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.ctaTitleArabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  font-size: 2rem;
+  color: var(--accent-gold);
+  margin-bottom: 1.5rem;
+  direction: rtl;
+}
+
+.ctaDescription {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+}
+
+.ctaDescriptionArabic {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+  direction: rtl;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btnRed {
+  background: linear-gradient(135deg, var(--red-primary), var(--red-secondary));
+  color: white;
+  box-shadow: var(--shadow-red);
+}
+
+.btnRed:hover {
+  background: linear-gradient(135deg, var(--red-secondary), var(--red-accent));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btnYellow {
+  background: linear-gradient(135deg, var(--yellow-primary), var(--yellow-secondary));
+  color: var(--text-dark);
+  box-shadow: var(--shadow-yellow);
+}
+
+.btnYellow:hover {
+  background: linear-gradient(135deg, var(--yellow-secondary), var(--yellow-accent));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(234, 179, 8, 0.3);
+}
+
+.btnOutline {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btnOutline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .heroContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+  
+  .heroTitleArabic {
+    font-size: 1.75rem;
+  }
+  
+  .heroButtons {
+    justify-content: center;
+  }
+  
+  .sectionTitle {
+    font-size: 2rem;
+  }
+  
+  .ctaTitle {
+    font-size: 2rem;
+  }
+  
+  .ctaTitleArabic {
+    font-size: 1.75rem;
+  }
+  
+  .aboutSection,
+  .servicesSection,
+  .ctaSection {
+    padding: 4rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+  
+  .heroTitleArabic {
+    font-size: 1.5rem;
+  }
+  
+  .btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .heroButtons,
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+}

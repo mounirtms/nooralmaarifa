@@ -1,21 +1,53 @@
-# Noor Al Maarifa Trading L.L.C - Preview Script
-# This script builds and serves the website locally for preview
-
-Write-Host "Building and previewing Noor Al Maarifa website..." -ForegroundColor Green
-
-# Build the project
-Write-Host "Building project..." -ForegroundColor Yellow
-npm run build
-
-# Check if build was successful
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Build successful!" -ForegroundColor Green
-    
-    # Serve the website
-    Write-Host "Starting local server..." -ForegroundColor Yellow
-    Write-Host "Website will be available at http://localhost:3000" -ForegroundColor Cyan
-    npm run serve
-} else {
-    Write-Host "Build failed!" -ForegroundColor Red
-    exit 1
-}
+70 
+400 
+75 
+75 
+90 
+170 
+250 
+330 
+40 
+80 
+160 
+70 
+150 
+140 
+240 
+340 
+150 
+250 
+350 
+450 
+60 
+80 
+160 
+240 
+320 
+550 
+160 
+270 
+500 
+380 
+610 
+1200 
+100 
+190 
+180 
+290 
+400 
+650 
+100 
+190 
+180 
+290 
+400 
+700 
+110 
+160 
+80 
+310 
+120 
+75 
+75 
+75 
+650 
