@@ -11,7 +11,7 @@ export const HomePage: React.FC = () => {
   const { ref: heroRef, inView: heroInView } = useScrollAnimation();
   const { ref: aboutRef, inView: aboutInView } = useScrollAnimation();
   const { ref: servicesRef, inView: servicesInView } = useScrollAnimation();
-  const { ref: featuresRef, inView: featuresInView } = useScrollAnimation();
+  const { ref: featuresRef } = useScrollAnimation();
   
   const { services, aboutFeatures, companyInfo } = useContent();
   
@@ -82,7 +82,7 @@ export const HomePage: React.FC = () => {
                 animate={heroInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                نقدم لوازم قرطاسية ومكاتب عالية الجودة في كافة أنحاء دبي والإمارات
+                نقدم لوازم قرطاسية ومكتبية عالية الجودة في كافة أنحاء دبي والإمارات
               </motion.p>
               
               <motion.div
@@ -229,7 +229,7 @@ export const HomePage: React.FC = () => {
               Contact us today for premium stationery and office supplies that elevate your business.
             </p>
             <p className={styles.ctaDescriptionArabic}>
-              اتصل بنا اليوم للحصول على قرطاسية ولوازم مكاتب عالية الجودة ترفع من مستوى أعمالك.
+              اتصل بنا اليوم للحصول على قرطاسية ولوازم مكتبية عالية الجودة ترفع من مستوى أعمالك.
             </p>
             <div className={styles.ctaButtons}>
               <Link to="/contact" className={`${styles.btn} ${styles.btnRed}`}>

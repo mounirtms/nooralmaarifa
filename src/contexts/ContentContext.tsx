@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getFirestore, collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 
 export interface ServiceItem {

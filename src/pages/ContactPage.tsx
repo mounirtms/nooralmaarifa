@@ -73,8 +73,8 @@ export const ContactPage: React.FC = () => {
                 <i className="fas fa-map-marker-alt"></i>
                 <div>
                   <h3>Location</h3>
-                  <p>Dubai, United Arab Emirates</p>
-                  <p className={styles.arabicText}>دبي، الإمارات العربية المتحدة</p>
+                  <p>Al Ras, Dubai, United Arab Emirates</p>
+                  <p className={styles.arabicText}>الرس، دبي، الإمارات العربية المتحدة</p>
                 </div>
               </div>
 
@@ -82,7 +82,7 @@ export const ContactPage: React.FC = () => {
                 <i className="fas fa-phone"></i>
                 <div>
                   <h3>Phone</h3>
-                  <p>+971 50 123 4567</p>
+                  <p>+971 555 505 618</p>
                   <p className={styles.arabicText}>اتصل بنا</p>
                 </div>
               </div>
@@ -91,7 +91,7 @@ export const ContactPage: React.FC = () => {
                 <i className="fas fa-envelope"></i>
                 <div>
                   <h3>Email</h3>
-                  <p>info@nooralmaarifa.com</p>
+                  <p>sales@nooralmaarifa.com</p>
                   <p className={styles.arabicText}>راسلنا إلكترونياً</p>
                 </div>
               </div>
@@ -103,6 +103,31 @@ export const ContactPage: React.FC = () => {
                   <p>Sunday - Thursday: 9:00 AM - 6:00 PM</p>
                   <p className={styles.arabicText}>الأحد - الخميس: 9 صباحاً - 6 مساءً</p>
                 </div>
+              </div>
+
+              {/* Google Maps */}
+              <div className={styles.mapSection}>
+                <h3>Find Us | موقعنا</h3>
+                <div className={styles.mapContainer}>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3608.5982977463934!2d55.29534821501504!3d25.267652083898654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f43348a67e24b%3A0x1d4ca78ba1a2d8f!2sAl%20Ras%2C%20Dubai%20-%20United%20Arab%20Emirates!5e0!3m2!1sen!2s!4v1697123456789!5m2!1sen!2s"
+                    width="100%"
+                    height="300"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Noor Al Maarifa Trading Location"
+                  ></iframe>
+                </div>
+                <a 
+                  href="https://maps.app.goo.gl/iaHvqhK9RMYfXtt79?g_st=aw" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={styles.mapLink}
+                >
+                  View on Google Maps
+                </a>
               </div>
             </motion.div>
 

@@ -4,7 +4,6 @@ import { PageLoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorBoundary } from '../components/common/ErrorBoundary';
 import { Layout } from '../components/layout/Layout';
 import { createLazyComponent } from '../components/common/LazyWrapper';
-import { ProtectedRoute } from '../components/admin/ProtectedRoute';
 
 // Lazy load page components for code splitting with error handling
 const HomePage = createLazyComponent(() => import('../pages/HomePage'), 'HomePage');

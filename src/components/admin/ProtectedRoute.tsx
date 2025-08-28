@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { AdminLogin } from './AdminLogin';
 import { PageLoadingSpinner } from '../common/LoadingSpinner';
@@ -14,7 +13,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAdmin = false 
 }) => {
   const { user, loading, isAdmin } = useAuth();
-  const location = useLocation();
 
   // Show loading spinner while checking authentication
   if (loading) {

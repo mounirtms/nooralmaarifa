@@ -26,6 +26,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchUserData = async (firebaseUser: FirebaseUser): Promise<User> => {
@@ -33,41 +34,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
       const userData = userDoc.data();
       
-      // List of authorized admin emails
       const adminEmails = [
         'admin@nooralmaarifa.com',
         'sales@nooralmaarifa.com',
-        'info@nooralmaarifa.com'
+        'info@nooralmaarifa.com',
+        'mounir@nooralmaarifa.com'
       ];
       
-      // Check if user is admin based on email and Firestore data
-      const isAdmin = adminEmails.includes(firebaseUser.email || '') || userData?.isAdmin || false;
+      const newIsAdmin = adminEmails.includes(firebaseUser.email || '') || userData?.isAdmin || false;
+      setIsAdmin(newIsAdmin);
       
       return {
         uid: firebaseUser.uid,
         email: firebaseUser.email || '',
         displayName: firebaseUser.displayName || userData?.displayName || 'Admin User',
         photoURL: firebaseUser.photoURL || userData?.photoURL || '',
-        isAdmin,
+        isAdmin: newIsAdmin,
         createdAt: userData?.createdAt || new Date().toISOString(),
         lastLoginAt: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Error fetching user data:', error);
       
-      // Fallback admin check for authorized emails
       const adminEmails = [
         'admin@nooralmaarifa.com',
         'sales@nooralmaarifa.com',
-        'info@nooralmaarifa.com'
+        'info@nooralmaarifa.com',
+        'mounir@nooralmaarifa.com'
       ];
+      const newIsAdmin = adminEmails.includes(firebaseUser.email || '');
+      setIsAdmin(newIsAdmin);
       
       return {
         uid: firebaseUser.uid,
         email: firebaseUser.email || '',
         displayName: firebaseUser.displayName || 'Admin User',
         photoURL: firebaseUser.photoURL || '',
-        isAdmin: adminEmails.includes(firebaseUser.email || ''),
+        isAdmin: newIsAdmin,
         createdAt: new Date().toISOString(),
         lastLoginAt: new Date().toISOString(),
       };
@@ -94,6 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await firebaseSignOut(auth);
       setUser(null);
+      setIsAdmin(false);
       toast.success('Successfully signed out!');
     } catch (error: any) {
       console.error('Sign out error:', error);
@@ -113,9 +117,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } catch (error) {
           console.error('Error setting user data:', error);
           setUser(null);
+          setIsAdmin(false);
         }
       } else {
         setUser(null);
+        setIsAdmin(false);
       }
       
       setLoading(false);
@@ -129,7 +135,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading,
     signIn,
     signOut,
-    isAdmin: user?.isAdmin || false,
+    isAdmin,
   };
 
   return (

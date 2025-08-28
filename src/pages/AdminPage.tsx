@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useContact } from '@/contexts/ContactContext';
 import { useGallery } from '@/contexts/GalleryContext';
@@ -11,23 +11,17 @@ import styles from './AdminPage.module.css';
 
 const AdminPageContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [editingContent, setEditingContent] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, signOut } = useAuth();
-  const { messages, updateMessageStatus, fetchMessages } = useContact();
-  const { images, uploadImage, deleteImage, fetchImages } = useGallery();
+  const { messages, updateMessageStatus } = useContact();
+  const { images, uploadImage, deleteImage } = useGallery();
   const { 
-    companyInfo, 
-    updateCompanyInfo, 
     services,
     updateService,
-    deleteService,
-    addService,
     aboutFeatures,
-    addAboutFeature,
     updateAboutFeature
   } = useContent();
 
