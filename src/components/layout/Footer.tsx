@@ -157,7 +157,13 @@ export const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 className={styles.developerLink}
               >
+                <div className={styles.developerIcon}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H3C1.9 1 1 1.9 1 3V21C1 22.1 1.9 23 3 23H21C22.1 23 23 22.1 23 21V9H21ZM15 3.5L19.5 8H15V3.5ZM12 8C14.8 8 17 10.2 17 13S14.8 18 12 18 7 15.8 7 13 9.2 8 12 8ZM12 10C10.3 10 9 11.3 9 13S10.3 16 12 16 15 14.7 15 13 13.7 10 12 10Z"/>
+                  </svg>
+                </div>
                 <span className={styles.developerName}>MAB</span>
+                <div className={styles.developerBadge}>Dev</div>
                 <i className="fas fa-external-link-alt"></i>
               </a>
             </div>

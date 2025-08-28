@@ -132,9 +132,16 @@ export const HomePage: React.FC = () => {
                 <Link to="/contact" className={`${styles.btn} ${styles.btnRed}`}>
                   Get In Touch | تواصل معنا
                 </Link>
-                <button onClick={downloadCatalog} className={`${styles.btn} ${styles.btnYellow}`}>
-                  <i className="fas fa-download"></i>
-                  Download Catalog | تحميل الكتالوج
+                <button onClick={downloadCatalog} className={`${styles.btn} ${styles.btnCatalog} ${styles.flashy}`}>
+                  <div className={styles.catalogIcon}>
+                    <i className="fas fa-download"></i>
+                  </div>
+                  <div className={styles.catalogText}>
+                    <span className={styles.catalogTitle}>Download Catalog 2026</span>
+                    <span className={styles.catalogTitleAr}>تحميل كتالوج المنتجات 2026</span>
+                    <span className={styles.catalogSubtitle}>Complete Product Guide</span>
+                  </div>
+                  <div className={styles.catalogBadge}>PDF</div>
                 </button>
               </motion.div>
             </div>
