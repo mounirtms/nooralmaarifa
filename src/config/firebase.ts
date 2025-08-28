@@ -5,12 +5,12 @@ import { getStorage } from 'firebase/storage';
 import type { FirebaseConfig } from '@/types';
 
 const firebaseConfig: FirebaseConfig = {
-  apiKey: "AIzaSyAdMpL6cLLmMdGbAF-6wV7IzEGgP7U4kAI",
+  apiKey: "AIzaSyC9t6N8_ZhRKZ1UVegEVTt9DuQAlvYf-Vs",
   authDomain: "noor-al-maarifa.firebaseapp.com",
   projectId: "noor-al-maarifa",
-  storageBucket: "noor-al-maarifa.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef123456789012345"
+  storageBucket: "noor-al-maarifa.firebasestorage.app",
+  messagingSenderId: "808435107960",
+  appId: "1:808435107960:web:7f1713ebcb667bd9b2c58d"
 };
 
 // Initialize Firebase

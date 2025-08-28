@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/contexts/AuthContext';
-import { downloadCatalog } from '@/utils';
+import { Menu, X, Phone, Mail, Download } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import styles from './Header.module.css';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface NavItem {
   path: string;
@@ -91,17 +91,6 @@ export const Header: React.FC = () => {
                 </Link>
               </li>
             ))}
-            
-            {/* Catalog Download Button */}
-            <li>
-              <button
-                onClick={downloadCatalog}
-                className={`${styles.catalogBtn} ${styles.btnYellow}`}
-              >
-                <i className="fas fa-download"></i>
-                Catalog | الكتالوج
-              </button>
-            </li>
           </ul>
 
           {/* User Info & Actions */}
@@ -209,35 +198,7 @@ export const Header: React.FC = () => {
                   </motion.li>
                 ))}
                 
-                <motion.li
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <button
-                    onClick={downloadCatalog}
-                    className={`${styles.mobileCatalogBtn} ${styles.btnYellow}`}
-                  >
-                    <i className="fas fa-download"></i>
-                    Download Catalog | تحميل الكتالوج
-                  </button>
-                </motion.li>
 
-                {user && isAdmin && (
-                  <motion.li
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <Link
-                      to="/myadmin"
-                      className={styles.mobileAdminLink}
-                    >
-                      <i className="fas fa-cog"></i>
-                      Admin Panel
-                    </Link>
-                  </motion.li>
-                )}
               </ul>
             </motion.div>
           )}

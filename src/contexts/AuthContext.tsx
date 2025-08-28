@@ -33,23 +33,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
       const userData = userDoc.data();
       
+      // List of authorized admin emails
+      const adminEmails = [
+        'admin@nooralmaarifa.com',
+        'sales@nooralmaarifa.com',
+        'info@nooralmaarifa.com'
+      ];
+      
+      // Check if user is admin based on email and Firestore data
+      const isAdmin = adminEmails.includes(firebaseUser.email || '') || userData?.isAdmin || false;
+      
       return {
         uid: firebaseUser.uid,
         email: firebaseUser.email || '',
-        displayName: firebaseUser.displayName || userData?.displayName || '',
+        displayName: firebaseUser.displayName || userData?.displayName || 'Admin User',
         photoURL: firebaseUser.photoURL || userData?.photoURL || '',
-        isAdmin: userData?.isAdmin || false,
+        isAdmin,
         createdAt: userData?.createdAt || new Date().toISOString(),
         lastLoginAt: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Error fetching user data:', error);
+      
+      // Fallback admin check for authorized emails
+      const adminEmails = [
+        'admin@nooralmaarifa.com',
+        'sales@nooralmaarifa.com',
+        'info@nooralmaarifa.com'
+      ];
+      
       return {
         uid: firebaseUser.uid,
         email: firebaseUser.email || '',
-        displayName: firebaseUser.displayName || '',
+        displayName: firebaseUser.displayName || 'Admin User',
         photoURL: firebaseUser.photoURL || '',
-        isAdmin: false,
+        isAdmin: adminEmails.includes(firebaseUser.email || ''),
         createdAt: new Date().toISOString(),
         lastLoginAt: new Date().toISOString(),
       };

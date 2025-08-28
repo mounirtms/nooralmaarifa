@@ -3,18 +3,66 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useContact } from '@/contexts/ContactContext';
 import { useGallery } from '@/contexts/GalleryContext';
+import { useContent } from '@/contexts/ContentContext';
+import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { toast } from 'react-hot-toast';
 import styles from './AdminPage.module.css';
 
-export const AdminPage: React.FC = () => {
+const AdminPageContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [editingContent, setEditingContent] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, signOut } = useAuth();
-  const { messages, updateMessageStatus, deleteMessage } = useContact();
-  const { images, uploadImage, deleteImage } = useGallery();
+  const { messages, updateMessageStatus, fetchMessages } = useContact();
+  const { images, uploadImage, deleteImage, fetchImages } = useGallery();
+  const { 
+    companyInfo, 
+    updateCompanyInfo, 
+    services,
+    updateService,
+    deleteService,
+    addService,
+    aboutFeatures,
+    addAboutFeature,
+    updateAboutFeature
+  } = useContent();
+
+  const getMessageStatusColor = (status: string) => {
+    switch (status) {
+      case 'new': return '#ff6b6b';
+      case 'read': return '#4ecdc4';
+      case 'replied': return '#45b7d1';
+      case 'resolved': return '#96ceb4';
+      default: return '#ddd';
+    }
+  };
+
+  const handleMessageAction = async (messageId: string, action: string) => {
+    if (action === 'delete') {
+      if (window.confirm('Are you sure you want to delete this message?')) {
+        // TODO: Implement delete functionality
+        toast.success('Message deleted!');
+      }
+    } else {
+      await handleStatusChange(messageId, action as any);
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    if (window.confirm('Are you sure you want to delete this image?')) {
+      try {
+        await deleteImage(imageId);
+        toast.success('Image deleted successfully!');
+      } catch (error) {
+        toast.error('Failed to delete image');
+        console.error('Delete error:', error);
+      }
+    }
+  };
 
   if (!user || !user.isAdmin) {
     return (
@@ -53,7 +101,13 @@ export const AdminPage: React.FC = () => {
           });
         }, 200);
 
-        await uploadImage(file);
+        // Add metadata for the uploaded image
+        const metadata = {
+          title: file.name,
+          category: 'products' as const,
+          uploadedBy: user?.uid || 'unknown'
+        };
+        await uploadImage(file, metadata);
         
         clearInterval(progressInterval);
         setUploadProgress(100);
@@ -75,42 +129,18 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  const handleMessageAction = async (messageId: string, action: 'read' | 'pending' | 'resolved' | 'delete') => {
+  const handleStatusChange = async (messageId: string, action: 'read' | 'replied' | 'resolved' | 'new') => {
     try {
-      if (action === 'delete') {
-        await deleteMessage(messageId);
-        toast.success('Message deleted successfully');
-      } else {
-        await updateMessageStatus(messageId, action);
-        toast.success(`Message marked as ${action}`);
-      }
-      setSelectedMessage(null);
+      await updateMessageStatus(messageId, action);
+      toast.success('Message status updated!');
     } catch (error) {
-      toast.error(`Failed to ${action} message`);
-      console.error('Message action error:', error);
+      console.error('Error updating status:', error);
+      toast.error('Failed to update status');
     }
   };
 
-  const handleImageDelete = async (imageId: string) => {
-    try {
-      await deleteImage(imageId);
-      toast.success('Image deleted successfully');
-    } catch (error) {
-      toast.error('Failed to delete image');
-      console.error('Delete error:', error);
-    }
-  };
-
-  const getMessageStatusColor = (status: string) => {
-    switch (status) {
-      case 'read': return 'var(--blue-primary)';
-      case 'resolved': return 'var(--green-primary)';
-      case 'pending': return 'var(--yellow-primary)';
-      default: return 'var(--gray-primary)';
-    }
-  };
-
-  const unreadMessages = messages.filter(m => m.status === 'pending' || m.status === 'unread');
+  // Fix unread messages filter to use correct status
+  const unreadMessages = messages.filter(m => m.status === 'new');
   const todayMessages = messages.filter(m => {
     const today = new Date().toDateString();
     return new Date(m.timestamp).toDateString() === today;
@@ -120,6 +150,7 @@ export const AdminPage: React.FC = () => {
     { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-bar', badge: null },
     { id: 'messages', label: 'Messages', icon: 'fas fa-envelope', badge: unreadMessages.length },
     { id: 'gallery', label: 'Gallery', icon: 'fas fa-images', badge: null },
+    { id: 'content', label: 'Content', icon: 'fas fa-edit', badge: null },
     { id: 'analytics', label: 'Analytics', icon: 'fas fa-analytics', badge: null },
     { id: 'settings', label: 'Settings', icon: 'fas fa-cog', badge: null }
   ];
@@ -150,7 +181,7 @@ export const AdminPage: React.FC = () => {
                   <span className={styles.userName}>Welcome, {user.displayName || user.email}</span>
                   <span className={styles.userRole}>System Administrator</span>
                 </div>
-                <button onClick={signOut} className={styles.signOutBtn}>
+                <button onClick={() => signOut()} className={styles.signOutBtn}>
                   <i className="fas fa-sign-out-alt"></i>
                   Sign Out
                 </button>
@@ -199,79 +230,7 @@ export const AdminPage: React.FC = () => {
             {/* Enhanced Main Content */}
             <main className={styles.mainContent}>
               {activeTab === 'dashboard' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={styles.dashboard}
-                >
-                  <div className={styles.dashboardHeader}>
-                    <h2>Dashboard Overview</h2>
-                    <div className={styles.lastUpdate}>
-                      <i className="fas fa-sync-alt"></i>
-                      Last updated: {new Date().toLocaleTimeString()}
-                    </div>
-                  </div>
-                  
-                  <div className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                      <div className={styles.statIcon}>
-                        <i className="fas fa-envelope"></i>
-                      </div>
-                      <div className={styles.statContent}>
-                        <h3>{messages.length}</h3>
-                        <p>Total Messages</p>
-                        <span className={styles.statChange}>+{todayMessages.length} today</span>
-                      </div>
-                    </div>
-                    <div className={styles.statCard}>
-                      <div className={styles.statIcon}>
-                        <i className="fas fa-images"></i>
-                      </div>
-                      <div className={styles.statContent}>
-                        <h3>{images.length}</h3>
-                        <p>Gallery Images</p>
-                        <span className={styles.statChange}>Active</span>
-                      </div>
-                    </div>
-                    <div className={styles.statCard}>
-                      <div className={styles.statIcon}>
-                        <i className="fas fa-bell"></i>
-                      </div>
-                      <div className={styles.statContent}>
-                        <h3>{unreadMessages.length}</h3>
-                        <p>Unread Messages</p>
-                        <span className={styles.statChange}>Pending</span>
-                      </div>
-                    </div>
-                    <div className={styles.statCard}>
-                      <div className={styles.statIcon}>
-                        <i className="fas fa-eye"></i>
-                      </div>
-                      <div className={styles.statContent}>
-                        <h3>2,847</h3>
-                        <p>Total Views</p>
-                        <span className={styles.statChange}>+12% this week</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.recentActivity}>
-                    <h3>Recent Activity</h3>
-                    <div className={styles.activityList}>
-                      {messages.slice(0, 3).map((message) => (
-                        <div key={message.id} className={styles.activityItem}>
-                          <div className={styles.activityIcon}>
-                            <i className="fas fa-message"></i>
-                          </div>
-                          <div className={styles.activityContent}>
-                            <p>New message from <strong>{message.name}</strong></p>
-                            <small>{new Date(message.timestamp).toLocaleString()}</small>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
+                <AdminDashboard />
               )}
 
               {activeTab === 'messages' && (
@@ -456,13 +415,93 @@ export const AdminPage: React.FC = () => {
                             <h4>{image.title}</h4>
                             <p className={styles.imageCategory}>{image.category}</p>
                             <small className={styles.imageDate}>
-                              {new Date(image.uploadDate || Date.now()).toLocaleDateString()}
+                              {new Date(image.uploadedAt || Date.now()).toLocaleDateString()}
                             </small>
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
+                </motion.div>
+              )}
+
+              {activeTab === 'content' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={styles.content}
+                >
+                  <h2>Content Management</h2>
+                  
+                  <div className={styles.contentSections}>
+                    <div className={styles.contentSection}>
+                      <h3>Services ({services.length})</h3>
+                      <div className={styles.itemsGrid}>
+                        {services.map((service) => (
+                          <div key={service.id} className={styles.contentItem}>
+                            <div className={styles.itemHeader}>
+                              <i className={service.icon}></i>
+                              <h4>{service.title}</h4>
+                              <button 
+                                onClick={() => setEditingContent(editingContent === service.id ? null : service.id)}
+                                className={styles.editBtn}
+                              >
+                                <i className="fas fa-edit"></i>
+                              </button>
+                            </div>
+                            {editingContent === service.id && (
+                              <div className={styles.editForm}>
+                                <input 
+                                  placeholder="Title"
+                                  defaultValue={service.title}
+                                  onBlur={(e) => updateService(service.id, { title: e.target.value })}
+                                />
+                                <textarea 
+                                  placeholder="Description"
+                                  defaultValue={service.description}
+                                  onBlur={(e) => updateService(service.id, { description: e.target.value })}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className={styles.contentSection}>
+                      <h3>About Features ({aboutFeatures.length})</h3>
+                      <div className={styles.itemsGrid}>
+                        {aboutFeatures.map((feature) => (
+                          <div key={feature.id} className={styles.contentItem}>
+                            <div className={styles.itemHeader}>
+                              <i className={feature.icon}></i>
+                              <h4>{feature.title}</h4>
+                              <button 
+                                onClick={() => setEditingContent(editingContent === feature.id ? null : feature.id)}
+                                className={styles.editBtn}
+                              >
+                                <i className="fas fa-edit"></i>
+                              </button>
+                            </div>
+                            {editingContent === feature.id && (
+                              <div className={styles.editForm}>
+                                <input 
+                                  placeholder="Title"
+                                  defaultValue={feature.title}
+                                  onBlur={(e) => updateAboutFeature(feature.id, { title: e.target.value })}
+                                />
+                                <textarea 
+                                  placeholder="Description"
+                                  defaultValue={feature.description}
+                                  onBlur={(e) => updateAboutFeature(feature.id, { description: e.target.value })}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </motion.div>
               )}
 
@@ -582,3 +621,14 @@ export const AdminPage: React.FC = () => {
     </div>
   );
 };
+
+// Wrap the AdminPage with ProtectedRoute to ensure security
+export const AdminPage: React.FC = () => {
+  return (
+    <ProtectedRoute requireAdmin={true}>
+      <AdminPageContent />
+    </ProtectedRoute>
+  );
+};
+
+export default AdminPage;

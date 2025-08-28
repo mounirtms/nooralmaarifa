@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks';
-import { downloadCatalog } from '@/utils';
+import { useContent } from '@/contexts/ContentContext';
+import { downloadCatalog, trackPageView, trackCatalogDownload } from '@/utils';
+import { updatePageSEO } from '@/utils/seo';
 import styles from './HomePage.module.css';
 
 export const HomePage: React.FC = () => {
@@ -10,68 +12,28 @@ export const HomePage: React.FC = () => {
   const { ref: aboutRef, inView: aboutInView } = useScrollAnimation();
   const { ref: servicesRef, inView: servicesInView } = useScrollAnimation();
   const { ref: featuresRef, inView: featuresInView } = useScrollAnimation();
-
-  const services = [
-    {
-      icon: 'fas fa-pen',
-      title: 'Writing Instruments',
-      titleAr: 'أدوات الكتابة',
-      description: 'Premium pens, pencils, markers, and highlighters from leading international brands.',
-      descriptionAr: 'أقلام وأدوات كتابة عالية الجودة من أفضل العلامات التجارية العالمية.'
-    },
-    {
-      icon: 'fas fa-copy',
-      title: 'Paper Products',
-      titleAr: 'منتجات ورقية',
-      description: 'High-quality paper, notebooks, files, and organizational supplies.',
-      descriptionAr: 'أوراق عالية الجودة ودفاتر وملفات ولوازم تنظيمية.'
-    },
-    {
-      icon: 'fas fa-laptop',
-      title: 'Office Equipment',
-      titleAr: 'معدات مكتبية',
-      description: 'Modern office equipment and accessories for enhanced productivity.',
-      descriptionAr: 'معدات مكتبية حديثة وإكسسوارات لتعزيز الإنتاجية.'
-    },
-    {
-      icon: 'fas fa-palette',
-      title: 'Art Supplies',
-      titleAr: 'لوازم فنية',
-      description: 'Complete range of art materials for creative professionals and students.',
-      descriptionAr: 'مجموعة كاملة من المواد الفنية للمحترفين والطلاب المبدعين.'
-    }
-  ];
-
-  const features = [
-    {
-      icon: 'fas fa-award',
-      title: 'Premium Quality',
-      titleAr: 'جودة عالية',
-      description: 'Only the finest products from trusted international brands.',
-      descriptionAr: 'أفضل المنتجات من العلامات التجارية العالمية الموثوقة.'
-    },
-    {
-      icon: 'fas fa-shipping-fast',
-      title: 'Fast Delivery',
-      titleAr: 'توصيل سريع',
-      description: 'Quick and reliable delivery across Dubai and UAE.',
-      descriptionAr: 'توصيل سريع وموثوق في جميع أنحاء دبي والإمارات.'
-    },
-    {
-      icon: 'fas fa-headset',
-      title: '24/7 Support',
-      titleAr: 'دعم على مدار الساعة',
-      description: 'Round-the-clock customer support for all your needs.',
-      descriptionAr: 'دعم العملاء على مدار الساعة لجميع احتياجاتك.'
-    },
-    {
-      icon: 'fas fa-handshake',
-      title: 'Trusted Partner',
-      titleAr: 'شريك موثوق',
-      description: 'Building long-term relationships with our valued clients.',
-      descriptionAr: 'بناء علاقات طويلة الأمد مع عملائنا الكرام.'
-    }
-  ];
+  
+  const { services, aboutFeatures, companyInfo } = useContent();
+  
+  useEffect(() => {
+    // Update SEO for homepage
+    updatePageSEO({
+      title: 'Noor Al Maarifa Trading - Premium Stationery & Office Supplies Dubai UAE',
+      description: companyInfo.description || 'Leading supplier of premium stationery, office supplies, and business equipment in Dubai and UAE.',
+      keywords: [
+        'stationery dubai', 'office supplies uae', 'قرطاسية دبي', 'لوازم مكتبية الإمارات',
+        'noor al maarifa', 'نور المعرفة', 'business supplies', 'writing instruments'
+      ]
+    });
+    
+    // Track page view
+    trackPageView('Homepage');
+  }, [companyInfo.description]);
+  
+  const handleCatalogDownload = () => {
+    trackCatalogDownload();
+    downloadCatalog();
+  };
 
   return (
     <div className={styles.homePage}>
@@ -132,7 +94,7 @@ export const HomePage: React.FC = () => {
                 <Link to="/contact" className={`${styles.btn} ${styles.btnRed}`}>
                   Get In Touch | تواصل معنا
                 </Link>
-                <button onClick={downloadCatalog} className={`${styles.btn} ${styles.btnCatalog} ${styles.flashy}`}>
+                <button onClick={handleCatalogDownload} className={`${styles.btn} ${styles.btnCatalog} ${styles.flashy}`}>
                   <div className={styles.catalogIcon}>
                     <i className="fas fa-download"></i>
                   </div>
@@ -177,9 +139,9 @@ export const HomePage: React.FC = () => {
           </motion.div>
 
           <div className={styles.aboutGrid}>
-            {features.map((feature, index) => (
+            {aboutFeatures.map((feature, index) => (
               <motion.div
-                key={index}
+                key={feature.id}
                 className={styles.featureCard}
                 initial={{ opacity: 0, y: 30 }}
                 animate={aboutInView ? { opacity: 1, y: 0 } : {}}

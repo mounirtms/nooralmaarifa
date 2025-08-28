@@ -940,6 +940,119 @@
   direction: rtl;
 }
 
+/* Content Management Styles */
+.contentSections {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.contentSection {
+  background: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.contentSection h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-dark);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.contentItem {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  transition: var(--transition);
+}
+
+.contentItem:hover {
+  box-shadow: var(--shadow-soft);
+}
+
+.itemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.itemHeader i {
+  color: var(--accent-orange);
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.itemHeader h4 {
+  flex: 1;
+  margin: 0;
+  color: var(--text-dark);
+  font-size: 1.1rem;
+}
+
+.editBtn {
+  background: var(--accent-orange);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.editBtn:hover {
+  background: var(--yellow-primary);
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.editForm input,
+.editForm textarea {
+  padding: 0.75rem;
+  border: 2px solid var(--border-light);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.editForm input:focus,
+.editForm textarea:focus {
+  outline: none;
+  border-color: var(--accent-orange);
+}
+
+.editForm textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.arabicText {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  text-align: right;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 1024px) {
   .adminLayout {
     grid-template-columns: 1fr;

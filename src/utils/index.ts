@@ -289,3 +289,57 @@ export const downloadFile = (url: string, filename?: string): void => {
 export const downloadCatalog = (): void => {
   downloadFile('https://bit.ly/NoorAlmaarifaCatalog2026', 'Noor-Al-Maarifa-Catalog-2026.pdf');
 };
+
+// SEO utilities
+export * from './seo';
+
+// Analytics and tracking utilities
+export const trackPageView = (pageName: string): void => {
+  // Google Analytics tracking
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('config', 'GA_MEASUREMENT_ID', {
+      page_title: pageName,
+      page_location: window.location.href
+    });
+  }
+  
+  // Custom tracking for development
+  console.log(`Page view tracked: ${pageName}`);
+};
+
+export const trackEvent = (eventName: string, eventData?: Record<string, any>): void => {
+  // Google Analytics event tracking
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('event', eventName, {
+      ...eventData,
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  // Custom tracking for development
+  console.log(`Event tracked: ${eventName}`, eventData);
+};
+
+export const trackCatalogDownload = (): void => {
+  trackEvent('catalog_download', {
+    event_category: 'engagement',
+    event_label: 'catalog_pdf',
+    value: 1
+  });
+};
+
+export const trackFormSubmission = (formType: string): void => {
+  trackEvent('form_submission', {
+    event_category: 'conversion',
+    event_label: formType,
+    value: 1
+  });
+};
+
+export const trackExternalLink = (url: string, linkText: string): void => {
+  trackEvent('external_link_click', {
+    event_category: 'outbound',
+    event_label: url,
+    link_text: linkText
+  });
+};
