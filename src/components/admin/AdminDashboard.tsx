@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useContact } from '@/contexts/ContactContext';
 import { useGallery } from '@/contexts/GalleryContext';
 import { toast } from 'react-hot-toast';
+import type { GalleryImage, ContactMessage } from '@/types';
 import styles from './AdminDashboard.module.css';
 
 export const AdminDashboard: React.FC = () => {
@@ -13,47 +14,47 @@ export const AdminDashboard: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
 
   // Calculate statistics
-  const totalMessages = messages.length;
-  const unreadMessages = messages.filter(m => m.status === 'new' || m.status === 'read').length;
-  const todayMessages = messages.filter(m => {
-    const today = new Date().toDateString();
-    return new Date(m.timestamp).toDateString() === today;
-  }).length;
-
-  const totalImages = images.length;
-  const recentImages = images.filter(img => {
-    const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    return new Date(img.uploadedAt).getTime() > weekAgo;
-  }).length;
+  // const totalMessages = messages.length;
+  // const todayMessages = messages.filter(m => {
+  //   const today = new Date().toDateString();
+  //   return new Date(m.timestamp).toDateString() === today;
+  // });
+  
+  // const totalImages = images.length;
+  const recentImages = images.filter((img: GalleryImage) => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    return new Date(img.uploadedAt) > oneWeekAgo;
+  });
 
   const stats = [
-    {
-      title: 'Total Messages',
-      value: totalMessages,
-      change: `+${todayMessages} today`,
-      icon: 'fas fa-envelope',
-      color: 'blue'
-    },
-    {
-      title: 'Unread Messages',
-      value: unreadMessages,
-      change: 'Needs attention',
-      icon: 'fas fa-bell',
-      color: 'orange'
-    },
-    {
-      title: 'Gallery Images',
-      value: totalImages,
-      change: `+${recentImages} this week`,
+    { 
+      title: 'Total Images', 
+      value: images.length, 
       icon: 'fas fa-images',
-      color: 'green'
+      color: 'blue'
+      // change: '+12%'
     },
-    {
-      title: 'System Status',
-      value: 'Active',
-      change: 'All systems operational',
-      icon: 'fas fa-server',
-      color: 'purple'
+    { 
+      title: 'Recent Uploads', 
+      value: recentImages.length, 
+      icon: 'fas fa-upload',
+      color: 'green'
+      // change: '+5%'
+    },
+    { 
+      title: 'Total Messages', 
+      value: messages.length, 
+      icon: 'fas fa-envelope',
+      color: 'yellow'
+      // change: '+3%'
+    },
+    { 
+      title: 'Pending Messages', 
+      value: messages.filter((msg: ContactMessage) => msg.status === 'new').length, 
+      icon: 'fas fa-clock',
+      color: 'red'
+      // change: '-2%'
     }
   ];
 
@@ -73,6 +74,16 @@ export const AdminDashboard: React.FC = () => {
       color: 'green'
     }))
   ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 5);
+
+  // const recentUploads = [...images]
+  //   .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())
+  //   .slice(0, 3)
+  //   .map((img: GalleryImage) => ({
+  //     id: img.id,
+  //     title: img.title,
+  //     url: img.url,
+  //     date: new Date(img.uploadedAt).toLocaleDateString()
+  //   }));
 
   return (
     <div className={styles.dashboard}>

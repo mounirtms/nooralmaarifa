@@ -105,18 +105,51 @@
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
+  border-radius: 2px;
+}
+
+.sectionTitle.on-dark {
+  color: var(--text-white);
+}
+
+.sectionTitle.on-dark::after {
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-orange));
 }
 
 .sectionSubtitle {
   font-size: 1.125rem;
   color: var(--text-light);
   margin-bottom: 0.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sectionSubtitle.on-dark {
+  color: var(--text-in-dark);
 }
 
 .sectionSubtitleArabic {
   font-family: 'Noto Sans Arabic', sans-serif;
   color: var(--text-lighter);
   direction: rtl;
+}
+
+.sectionSubtitleArabic.on-dark {
+  color: var(--text-in-dark-light);
 }
 
 /* Feature Cards */

@@ -66,7 +66,7 @@
 }
 
 .navLink {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-in-dark);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;

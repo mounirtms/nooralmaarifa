@@ -7,13 +7,17 @@ import { useContent } from '@/contexts/ContentContext';
 import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { toast } from 'react-hot-toast';
+import type { GalleryImage } from '@/types';
 import styles from './AdminPage.module.css';
+import { Edit, Trash2 } from 'lucide-react';
 
 const AdminPageContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [editingContent, setEditingContent] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, signOut } = useAuth();
   const { messages, updateMessageStatus } = useContact();
@@ -47,14 +51,18 @@ const AdminPageContent: React.FC = () => {
   };
 
   const handleImageDelete = async (imageId: string) => {
+    try {
+      await deleteImage(imageId);
+      toast.success('Image deleted successfully');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error('Failed to delete image');
+    }
+  };
+
+  const handleDeleteImage = async (imageId: string) => {
     if (window.confirm('Are you sure you want to delete this image?')) {
-      try {
-        await deleteImage(imageId);
-        toast.success('Image deleted successfully!');
-      } catch (error) {
-        toast.error('Failed to delete image');
-        console.error('Delete error:', error);
-      }
+      await handleImageDelete(imageId);
     }
   };
 
@@ -389,31 +397,46 @@ const AdminPageContent: React.FC = () => {
                   ) : (
                     <div className={styles.galleryGrid}>
                       {images.map((image) => (
-                        <div key={image.id} className={styles.galleryItem}>
-                          <div className={styles.imageWrapper}>
-                            <img src={image.url} alt={image.title} />
-                            <div className={styles.imageOverlay}>
-                              <button
-                                onClick={() => handleImageDelete(image.id)}
-                                className={styles.deleteImageBtn}
-                                title="Delete image"
+                        <motion.tr
+                          key={image.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <td>
+                            <div className={styles.imagePreview}>
+                              <img src={image.url} alt={image.title} />
+                            </div>
+                          </td>
+                          <td>{image.title}</td>
+                          <td>
+                            <span className={`${styles.badge} ${styles[image.category]}`}>
+                              {image.category}
+                            </span>
+                          </td>
+                          <td>{new Date(image.uploadedAt).toLocaleDateString()}</td>
+                          <td>
+                            <div className={styles.actions}>
+                              <button 
+                                className={styles.editBtn}
+                                onClick={() => {
+                                  setSelectedImage(image);
+                                  setIsImageModalOpen(true);
+                                }}
                               >
-                                <i className="fas fa-trash"></i>
+                                <Edit size={16} />
                               </button>
-                              <button className={styles.editImageBtn} title="Edit image">
-                                <i className="fas fa-edit"></i>
+                              <button 
+                                className={styles.deleteBtn}
+                                onClick={() => handleDeleteImage(image.id)}
+                              >
+                                <Trash2 size={16} />
                               </button>
                             </div>
-                          </div>
-                          <div className={styles.imageInfo}>
-                            <h4>{image.title}</h4>
-                            <p className={styles.imageCategory}>{image.category}</p>
-                            <small className={styles.imageDate}>
-                              {new Date(image.uploadedAt || Date.now()).toLocaleDateString()}
-                            </small>
-                          </div>
-                        </div>
+                          </td>
+                        </motion.tr>
                       ))}
+
                     </div>
                   )}
                 </motion.div>

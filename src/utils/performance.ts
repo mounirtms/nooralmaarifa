@@ -1,5 +1,4 @@
-import { lazy, ComponentType, LazyExoticComponent } from 'react';
-
+/*
 // Performance monitoring utilities
 export const performanceLogger = {
   markStart: (name: string) => {
@@ -290,3 +289,5 @@ export const initializePerformanceMonitoring = () => {
     }
   }
 };
+*/
+export {};

@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useGallery } from '@/contexts/GalleryContext';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
+import type { GalleryImage } from '@/types';
 import styles from './GalleryPage.module.css';
 
 export const GalleryPage: React.FC = () => {
@@ -39,25 +41,26 @@ export const GalleryPage: React.FC = () => {
 
       <section className={styles.gallerySection}>
         <div className="container">
-          <div className={styles.galleryGrid}>
-            {displayImages.map((image, index) => (
+          <div className={styles.imageGrid}>
+            {displayImages.map((image: GalleryImage, index: number) => (
               <motion.div
                 key={image.id}
-                className={styles.galleryItem}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                className={styles.imageCard}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
               >
-                <img 
-                  src={image.url} 
-                  alt={image.title}
-                  loading="lazy"
-                />
-                <div className={styles.overlay}>
-                  <h3>{image.title}</h3>
-                  <p>{image.category}</p>
+                <div className={styles.imageWrapper}>
+                  <ImageWithFallback
+                    src={image.url}
+                    alt={image.title}
+                    fallbackSrc={(image as any).fallbackUrl || '/images/LOGOICON.png'}
+                    className={styles.galleryImage}
+                  />
+                  <div className={styles.imageOverlay}>
+                    <h3 className={styles.imageTitle}>{image.title}</h3>
+                    <span className={styles.imageCategory}>{image.category}</span>
+                  </div>
                 </div>
               </motion.div>
             ))}

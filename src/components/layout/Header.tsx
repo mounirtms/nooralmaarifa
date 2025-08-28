@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './Header.module.css';
 import { useAuth } from '@/contexts/AuthContext';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface NavItem {
   path: string;
@@ -69,7 +69,7 @@ export const Header: React.FC = () => {
         <nav className={styles.navbar}>
           {/* Logo */}
           <Link to="/" className={styles.logo}>
-            <img 
+            <ImageWithFallback 
               src="/images/LOGOICON.png" 
               alt="Noor Al Maarifa Trading" 
               className={styles.logoImg}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import styles from './Footer.module.css';
 
 export const Footer: React.FC = () => {
@@ -27,7 +28,7 @@ export const Footer: React.FC = () => {
             {/* Company Info */}
             <div className={styles.footerSection}>
               <div className={styles.footerLogo}>
-                <img 
+                <ImageWithFallback 
                   src="/images/LOGOICON.png" 
                   alt="Noor Al Maarifa Trading" 
                   className={styles.logoImg}
@@ -83,7 +84,7 @@ export const Footer: React.FC = () => {
                 className={styles.technoLink}
               >
                 <div className={styles.technoLogo}>
-                  <img src="/images/logo_techno.png" alt="Techno Stationery" />
+                  <ImageWithFallback src="/images/logo_techno.png" alt="Techno Stationery" />
                 </div>
                 <div className={styles.technoInfo}>
                   <h5>Techno Stationery</h5>

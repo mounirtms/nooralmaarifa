@@ -7,12 +7,12 @@ import { ContentProvider } from './contexts/ContentContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { preloadCritical } from './utils/preloader';
 import { updatePageSEO, businessStructuredData } from './utils/seo';
-import { initializePerformanceMonitoring } from './utils/performance';
+//import { initializePerformanceMonitoring } from './utils/performance';
 
 function App() {
   useEffect(() => {
     // Initialize performance monitoring
-    initializePerformanceMonitoring();
+    //initializePerformanceMonitoring();
     
     // Initialize SEO
     updatePageSEO({

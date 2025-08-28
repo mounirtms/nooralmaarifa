@@ -50,9 +50,9 @@ export const ContactPage: React.FC = () => {
     <div className={styles.contactPage}>
       <section className={styles.headerSection}>
         <div className="container">
-          <h1>Contact Us | تواصل معنا</h1>
-          <p>Get in touch with our team for all your stationery needs</p>
-          <p className={styles.arabicText}>تواصل مع فريقنا لجميع احتياجاتك من القرطاسية</p>
+          <h1 className="on-dark">Contact Us | تواصل معنا</h1>
+          <p className="on-dark-light">Get in touch with our team for all your stationery needs</p>
+          <p className={`${styles.arabicText} on-dark-light`}>تواصل مع فريقنا لجميع احتياجاتك من القرطاسية</p>
         </div>
       </section>
 

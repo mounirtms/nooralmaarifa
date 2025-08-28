@@ -11,7 +11,6 @@ export const HomePage: React.FC = () => {
   const { ref: heroRef, inView: heroInView } = useScrollAnimation();
   const { ref: aboutRef, inView: aboutInView } = useScrollAnimation();
   const { ref: servicesRef, inView: servicesInView } = useScrollAnimation();
-  const { ref: featuresRef } = useScrollAnimation();
   
   const { services, aboutFeatures, companyInfo } = useContent();
   

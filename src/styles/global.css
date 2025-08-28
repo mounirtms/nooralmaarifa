@@ -48,6 +48,8 @@ body {
   --text-light: #6b7280;
   --text-lighter: #9ca3af;
   --text-white: #ffffff;
+  --text-in-dark: #e2e8f0; /* New color for text in dark backgrounds */
+  --text-in-dark-light: #cbd5e1; /* Lighter text for dark backgrounds */
   
   /* Background Colors */
   --bg-primary: #ffffff;
@@ -93,12 +95,14 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-dark);
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1.125rem; }
+/* Special heading classes for use on dark backgrounds */
+.on-dark {
+  color: var(--text-white) !important;
+}
+
+.on-dark-light {
+  color: var(--text-in-dark) !important;
+}
 
 p {
   margin-bottom: 1rem;
@@ -235,6 +239,8 @@ input, textarea, select {
 .text-yellow-primary { color: var(--yellow-primary); }
 .text-yellow-secondary { color: var(--yellow-secondary); }
 .text-white { color: var(--text-white); }
+.text-in-dark { color: var(--text-in-dark); }
+.text-in-dark-light { color: var(--text-in-dark-light); }
 
 /* Animation utilities */
 @keyframes fadeIn {

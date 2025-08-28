@@ -51,29 +51,20 @@
 
 /* Company Description */
 .companyDescription {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-in-dark);
   line-height: 1.5;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
 .companyDescriptionAr {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-in-dark-light);
   line-height: 1.6;
   font-family: 'Noto Sans Arabic', sans-serif;
   direction: rtl;
   text-align: right;
   font-size: 0.85rem;
   margin-top: 0.5rem;
-}
-
-.companyDescriptionAr {
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
-  font-family: 'Noto Sans Arabic', sans-serif;
-  direction: rtl;
-  text-align: right;
-  font-size: 0.85rem;
 }
 
 /* Social Links */
@@ -107,7 +98,7 @@
 
 /* Section Titles */
 .sectionTitle {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--accent-gold);
   margin: 0 0 1rem 0;
@@ -137,7 +128,7 @@
 }
 
 .footerLink {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-in-dark);
   text-decoration: none;
   transition: var(--transition);
   position: relative;

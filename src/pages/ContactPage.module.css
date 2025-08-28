@@ -4,7 +4,7 @@
 
 .headerSection {
   background: var(--bg-gradient);
-  color: white;
+  color: var(--text-in-dark);
   padding: 4rem 0;
   text-align: center;
 }
@@ -12,11 +12,13 @@
 .headerSection h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
+  color: var(--text-white);
 }
 
 .headerSection p {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  color: var(--text-in-dark);
 }
 
 .arabicText {

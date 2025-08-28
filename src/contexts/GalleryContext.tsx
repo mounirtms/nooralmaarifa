@@ -9,19 +9,38 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  QueryDocumentSnapshot,
+  DocumentData
 } from 'firebase/firestore';
 import {
   ref,
   uploadBytes,
   getDownloadURL,
-  deleteObject,
 } from 'firebase/storage';
 import { db, storage } from '@/config/firebase';
-import type { GalleryImage, GalleryContextType } from '@/types';
+import type { GalleryImage } from '@/types';
 import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 
-const GalleryContext = createContext<GalleryContextType | undefined>(undefined);
+// Define fallback images
+const fallbackImages = [
+  '/images/products (1).jpeg',
+  '/images/products (2).jpeg',
+  '/images/products (3).jpeg',
+  '/images/products (4).jpeg',
+  '/images/products (5).jpeg',
+  '/images/products (6).jpeg',
+  '/images/products (7).jpeg',
+  '/images/products (8).jpeg',
+  '/images/products (9).jpeg',
+  '/images/products (10).jpeg',
+  '/images/products (11).jpeg',
+  '/images/products (12).jpeg',
+  '/images/products (13).jpeg',
+  '/images/products (14).jpeg'
+];
+
+const GalleryContext = createContext<any | undefined>(undefined);
 
 export const useGallery = () => {
   const context = useContext(GalleryContext);
@@ -47,14 +66,31 @@ export const GalleryProvider: React.FC<GalleryProviderProps> = ({ children }) =>
       const querySnapshot = await getDocs(q);
       
       const imageList: GalleryImage[] = [];
-      querySnapshot.forEach((doc) => {
-        imageList.push({ id: doc.id, ...doc.data() } as GalleryImage);
+      querySnapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
+        const imageData = doc.data() as GalleryImage;
+        imageList.push({
+          ...imageData,
+          id: doc.id
+        });
       });
       
       setImages(imageList);
     } catch (error) {
       console.error('Error fetching images:', error);
       toast.error('Failed to load gallery images');
+      
+      // If Firebase fetch fails, use fallback images
+      const fallbackImageList: GalleryImage[] = fallbackImages.map((url, index) => ({
+        id: `fallback-${index}`,
+        url: url,
+        title: `Product Image ${index + 1}`,
+        category: 'products',
+        uploadedAt: new Date().toISOString(),
+        uploadedBy: 'system',
+        order: index
+      }));
+      
+      setImages(fallbackImageList);
     } finally {
       setLoading(false);
     }
@@ -80,29 +116,34 @@ export const GalleryProvider: React.FC<GalleryProviderProps> = ({ children }) =>
       // Create thumbnail URL (you might want to implement actual thumbnail generation)
       const thumbnailUrl = downloadURL; // For now, use the same URL
       
-      // Save to Firestore
-      const imageData = {
+      // Add to Firestore
+      const docRef = await addDoc(collection(db, 'gallery'), {
         url: downloadURL,
         thumbnailUrl,
-        title: metadata.title || '',
-        description: metadata.description || '',
-        category: metadata.category || 'products',
+        ...metadata,
         uploadedAt: serverTimestamp(),
         uploadedBy: user.uid,
-        order: metadata.order || images.length,
-        tags: metadata.tags || [],
-        featured: metadata.featured || false,
-      };
+        order: images.length
+      });
       
-      await addDoc(collection(db, 'gallery'), imageData);
+      // Update local state
+      setImages(prev => [
+        ...prev,
+        {
+          id: docRef.id,
+          url: downloadURL,
+          thumbnailUrl,
+          ...metadata,
+          uploadedAt: new Date().toISOString(),
+          uploadedBy: user.uid,
+          order: prev.length
+        } as GalleryImage
+      ]);
       
-      // Refresh the images list
-      await fetchImages();
-      
-      toast.success('Image uploaded successfully!');
-    } catch (error: any) {
+      toast.success('Image uploaded successfully');
+    } catch (error) {
       console.error('Error uploading image:', error);
-      toast.error(error.message || 'Failed to upload image');
+      toast.error('Failed to upload image');
       throw error;
     } finally {
       setLoading(false);
@@ -110,37 +151,23 @@ export const GalleryProvider: React.FC<GalleryProviderProps> = ({ children }) =>
   };
 
   const deleteImage = async (id: string): Promise<void> => {
-    if (!user || !user.isAdmin) {
-      throw new Error('Admin access required to delete images');
+    if (!user) {
+      throw new Error('User must be authenticated to delete images');
     }
 
     try {
       setLoading(true);
       
-      const imageToDelete = images.find(img => img.id === id);
-      if (!imageToDelete) {
-        throw new Error('Image not found');
-      }
-
-      // Delete from Storage
-      try {
-        const imageRef = ref(storage, imageToDelete.url);
-        await deleteObject(imageRef);
-      } catch (storageError) {
-        console.warn('Failed to delete from storage:', storageError);
-        // Continue with Firestore deletion even if storage deletion fails
-      }
-
       // Delete from Firestore
       await deleteDoc(doc(db, 'gallery', id));
       
-      // Refresh the images list
-      await fetchImages();
+      // Update local state
+      setImages(prev => prev.filter(img => img.id !== id));
       
-      toast.success('Image deleted successfully!');
-    } catch (error: any) {
+      toast.success('Image deleted successfully');
+    } catch (error) {
       console.error('Error deleting image:', error);
-      toast.error(error.message || 'Failed to delete image');
+      toast.error('Failed to delete image');
       throw error;
     } finally {
       setLoading(false);
@@ -148,23 +175,26 @@ export const GalleryProvider: React.FC<GalleryProviderProps> = ({ children }) =>
   };
 
   const updateImage = async (id: string, updates: Partial<GalleryImage>): Promise<void> => {
-    if (!user || !user.isAdmin) {
-      throw new Error('Admin access required to update images');
+    if (!user) {
+      throw new Error('User must be authenticated to update images');
     }
 
     try {
       setLoading(true);
       
+      // Update in Firestore
       const imageRef = doc(db, 'gallery', id);
       await updateDoc(imageRef, updates);
       
-      // Refresh the images list
-      await fetchImages();
+      // Update local state
+      setImages(prev => 
+        prev.map(img => img.id === id ? { ...img, ...updates } as GalleryImage : img)
+      );
       
-      toast.success('Image updated successfully!');
-    } catch (error: any) {
+      toast.success('Image updated successfully');
+    } catch (error) {
       console.error('Error updating image:', error);
-      toast.error(error.message || 'Failed to update image');
+      toast.error('Failed to update image');
       throw error;
     } finally {
       setLoading(false);
@@ -175,7 +205,7 @@ export const GalleryProvider: React.FC<GalleryProviderProps> = ({ children }) =>
     fetchImages();
   }, []);
 
-  const value: GalleryContextType = {
+  const value = {
     images,
     loading,
     uploadImage,
