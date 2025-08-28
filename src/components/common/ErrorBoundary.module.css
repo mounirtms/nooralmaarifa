@@ -2,112 +2,121 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 60vh;
   padding: 2rem;
-  background-color: #f9fafb;
+  background: var(--bg-secondary);
 }
 
 .errorContainer {
   text-align: center;
   max-width: 500px;
-  padding: 3rem 2rem;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 3rem 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
 .errorIcon {
   font-size: 4rem;
   margin-bottom: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
 }
 
 .errorTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--red-primary);
 }
 
 .errorTitleEn {
   display: block;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 .errorTitleAr {
   display: block;
-  font-family: 'Noto Sans Arabic', 'Cairo', sans-serif;
-  direction: rtl;
-  margin-top: 0.5rem;
   font-size: 1.25rem;
+  font-family: 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  color: var(--red-secondary);
 }
 
 .errorMessage {
-  color: #6b7280;
   margin-bottom: 2rem;
   line-height: 1.6;
 }
 
 .errorMessageEn {
   display: block;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
 }
 
 .errorMessageAr {
   display: block;
-  font-family: 'Noto Sans Arabic', 'Cairo', sans-serif;
+  font-family: 'Noto Sans Arabic', sans-serif;
   direction: rtl;
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
+  color: var(--text-lighter);
+  font-size: 0.95rem;
 }
 
 .refreshButton {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, var(--red-primary), var(--red-secondary));
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: var(--transition);
+  box-shadow: var(--shadow-red);
 }
 
 .refreshButton:hover {
-  background-color: #1d4ed8;
-}
-
-.refreshButton:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  background: linear-gradient(135deg, var(--red-secondary), var(--red-accent));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 38, 38, 0.3);
 }
 
 .buttonTextEn {
   display: block;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin-bottom: 0.25rem;
 }
 
 .buttonTextAr {
   display: block;
-  font-family: 'Noto Sans Arabic', 'Cairo', sans-serif;
-  direction: rtl;
-  margin-top: 0.25rem;
+  font-family: 'Noto Sans Arabic', sans-serif;
   font-size: 0.9rem;
+  opacity: 0.9;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .errorBoundary {
-    background-color: #111827;
-  }
-  
+@media (max-width: 768px) {
   .errorContainer {
-    background: #1f2937;
+    padding: 2rem 1.5rem;
   }
   
-  .errorTitle {
-    color: #f9fafb;
+  .errorIcon {
+    font-size: 3rem;
   }
   
-  .errorMessage {
-    color: #d1d5db;
+  .errorTitleEn {
+    font-size: 1.25rem;
+  }
+  
+  .errorTitleAr {
+    font-size: 1.1rem;
   }
 }

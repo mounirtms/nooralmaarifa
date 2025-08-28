@@ -8,7 +8,6 @@ import {
   query,
   orderBy,
   serverTimestamp,
-  where,
 } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import type { ContactMessage, ContactContextType } from '@/types';

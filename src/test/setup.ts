@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 // Mock Firebase
 const mockFirebase = {
@@ -31,20 +32,31 @@ vi.mock('firebase/firestore', () => mockFirebase);
 vi.mock('firebase/storage', () => mockFirebase);
 
 // Mock intersection observer
-global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
+Object.defineProperty(global, 'IntersectionObserver', {
+  writable: true,
+  value: class MockIntersectionObserver {
+    root = null;
+    rootMargin = '';
+    thresholds = [0];
+    
+    constructor() {}
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() { return []; }
+  },
+});
 
 // Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
+Object.defineProperty(global, 'ResizeObserver', {
+  writable: true,
+  value: class MockResizeObserver {
+    constructor() {}
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  },
+});
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

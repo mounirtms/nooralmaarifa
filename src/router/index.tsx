@@ -70,6 +70,14 @@ const router = createHashRouter([
           </Suspense>
         ),
       },
+      {
+        path: 'myadmin',
+        element: (
+          <Suspense fallback={<PageLoadingSpinner />}>
+            <AdminPage />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);

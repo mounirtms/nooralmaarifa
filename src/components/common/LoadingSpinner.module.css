@@ -11,12 +11,12 @@
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(4px);
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
   z-index: 9999;
-  min-height: 100vh;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .spinner {
@@ -42,7 +42,7 @@
 .spinnerRing {
   position: absolute;
   border: 3px solid transparent;
-  border-top: 3px solid #2563eb;
+  border-top: 3px solid var(--accent-orange);
   border-radius: 50%;
   animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
@@ -70,20 +70,21 @@
 
 .spinnerRing:nth-child(1) {
   animation-delay: -0.45s;
+  border-top-color: var(--accent-orange);
 }
 
 .spinnerRing:nth-child(2) {
   animation-delay: -0.3s;
-  border-top-color: #3b82f6;
+  border-top-color: var(--accent-gold);
 }
 
 .spinnerRing:nth-child(3) {
   animation-delay: -0.15s;
-  border-top-color: #60a5fa;
+  border-top-color: var(--yellow-primary);
 }
 
 .spinnerRing:nth-child(4) {
-  border-top-color: #93c5fd;
+  border-top-color: var(--yellow-secondary);
 }
 
 @keyframes spin {
@@ -97,51 +98,34 @@
 
 .message {
   text-align: center;
-  font-size: 0.875rem;
-  color: #6b7280;
-  font-weight: 500;
+  color: white;
 }
 
 .messageEn {
   display: block;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
 }
 
 .messageAr {
   display: block;
-  font-family: 'Noto Sans Arabic', 'Cairo', sans-serif;
+  font-size: 1rem;
+  font-family: 'Noto Sans Arabic', sans-serif;
   direction: rtl;
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .fullScreen {
-    background-color: rgba(17, 24, 39, 0.95);
-  }
-  
-  .message {
-    color: #9ca3af;
-  }
+/* Non-fullscreen styling */
+.container:not(.fullScreen) .message {
+  color: var(--text-dark);
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .spinnerRing {
-    animation: none;
-    border-top-color: #2563eb;
-  }
-  
-  .spinner::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
-    background-color: #2563eb;
-    border-radius: 50%;
-  }
+.container:not(.fullScreen) .messageEn {
+  font-size: 0.9rem;
+}
+
+.container:not(.fullScreen) .messageAr {
+  font-size: 0.85rem;
+  color: var(--text-light);
 }
