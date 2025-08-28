@@ -9,15 +9,15 @@ import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { toast } from 'react-hot-toast';
 import type { GalleryImage } from '@/types';
 import styles from './AdminPage.module.css';
-import { Edit, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 const AdminPageContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [editingContent, setEditingContent] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  // const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  // const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, signOut } = useAuth();
   const { messages, updateMessageStatus } = useContact();
@@ -396,7 +396,7 @@ const AdminPageContent: React.FC = () => {
                     </div>
                   ) : (
                     <div className={styles.galleryGrid}>
-                      {images.map((image) => (
+                      {images.map((image: GalleryImage) => (
                         <motion.tr
                           key={image.id}
                           initial={{ opacity: 0, y: 20 }}
@@ -417,7 +417,7 @@ const AdminPageContent: React.FC = () => {
                           <td>{new Date(image.uploadedAt).toLocaleDateString()}</td>
                           <td>
                             <div className={styles.actions}>
-                              <button 
+                              {/* <button 
                                 className={styles.editBtn}
                                 onClick={() => {
                                   setSelectedImage(image);
@@ -425,7 +425,7 @@ const AdminPageContent: React.FC = () => {
                                 }}
                               >
                                 <Edit size={16} />
-                              </button>
+                              </button> */}
                               <button 
                                 className={styles.deleteBtn}
                                 onClick={() => handleDeleteImage(image.id)}

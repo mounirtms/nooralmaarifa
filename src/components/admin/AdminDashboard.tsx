@@ -58,6 +58,8 @@ export const AdminDashboard: React.FC = () => {
     }
   ];
 
+  const unreadMessages = messages.filter((msg: ContactMessage) => msg.status === 'new').length;
+
   const recentActivity = [
     ...messages.slice(0, 3).map(msg => ({
       type: 'message',
@@ -66,7 +68,7 @@ export const AdminDashboard: React.FC = () => {
       icon: 'fas fa-message',
       color: 'blue'
     })),
-    ...images.slice(0, 2).map(img => ({
+    ...images.slice(0, 2).map((img: GalleryImage) => ({
       type: 'upload',
       title: `Image uploaded: ${img.title}`,
       time: new Date(img.uploadedAt).toLocaleString(),
@@ -124,9 +126,13 @@ export const AdminDashboard: React.FC = () => {
               <i className={stat.icon}></i>
             </div>
             <div className={styles.statContent}>
+              <div className={styles.statHeader}>
+                <h3>{stat.title}</h3>
+                {/* {stat.change && (
+                  <span className={styles.statChange}>{stat.change}</span>
+                )} */}
+              </div>
               <h3>{stat.value}</h3>
-              <p>{stat.title}</p>
-              <span className={styles.statChange}>{stat.change}</span>
             </div>
           </motion.div>
         ))}
