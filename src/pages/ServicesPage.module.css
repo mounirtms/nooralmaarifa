@@ -195,10 +195,6 @@
 }
 
 /* Dark Theme Adjustments */
-[data-theme="dark"] .hero {
-  /* background: var(--gradient-primary);  - 重复定义，已在全局主题中设置 */
-}
-
 [data-theme="dark"] .serviceCard {
   background: var(--color-surface);
   border-color: var(--color-border);
@@ -214,4 +210,5 @@
 
 [data-theme="dark"] .serviceCard p {
   color: var(--color-text-secondary);
+}r(--color-text-secondary);
 }

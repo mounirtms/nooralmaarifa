@@ -3,10 +3,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--gradient-warm);
-  padding: var(--space-4);
+  background: var(--color-background);
+  padding: 1rem;
   position: relative;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .loginContainer::before {
@@ -27,11 +27,15 @@
   width: 100%;
   max-width: 420px;
   background: var(--color-surface);
-  border-radius: var(--border-radius-2xl);
-  box-shadow: var(--shadow-2xl);
+  border-radius: 1rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--color-border);
   overflow: hidden;
-  transition: var(--transition);
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .loginCard {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
 .loginHeader {

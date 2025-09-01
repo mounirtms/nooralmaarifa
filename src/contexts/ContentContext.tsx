@@ -281,7 +281,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         order: aboutFeatures.length + 1
       };
       
-      const updatedFeatures = [...aboutFeatures, newFeature];
+      const updatedFeatures = [...aboutFeatures, newFeature].sort((a, b) => a.order - b.order);
+      setAboutFeatures(updatedFeatures);
+      localStorage.setItem('aboutFeatures', JSON.stringify(updatedFeatures));
+      toast.success('Feature added successfully');datedFeatures = [...aboutFeatures, newFeature];
       saveAboutFeatures(updatedFeatures);
       toast.success('Feature added successfully');
     } catch (error) {

@@ -500,7 +500,7 @@
 }
 
 .actionBtn.delete:hover {
-  background: var(--red-primary);
+  background: #dc2626;
 }
 
 .messageBody {
@@ -509,7 +509,7 @@
 
 .messageBody p {
   margin: 0;
-  color: var(--text-dark);
+  color: var(--color-text);
   line-height: 1.6;
 }
 
