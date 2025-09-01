@@ -1,14 +1,30 @@
 .aboutPage {
   padding: 2rem 0;
   min-height: 80vh;
+  background: var(--color-background);
 }
 
 .hero {
   text-align: center;
-  padding: 4rem 0;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 5rem 0;
+  background: var(--gradient-primary);
   margin-bottom: 3rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-large);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .arabicText {
@@ -22,98 +38,260 @@
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, #f9fafb, #fde047);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1rem;
 }
 
 .subtitle {
-  font-size: 1.25rem;
-  color: var(--text-light);
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 0.5rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.7;
 }
 
 .content {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
+  padding: 0 2.5rem;
 }
 
 .section {
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
+  background: var(--color-surface);
+  padding: 3rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--color-border);
 }
 
 .section h2 {
-  font-size: 2rem;
-  color: var(--text-dark);
+  font-size: 2.5rem;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
   text-align: center;
+  font-weight: 700;
 }
 
 .section p {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.8;
-  color: var(--text-light);
+  color: var(--color-text-secondary);
   max-width: 800px;
   margin: 0 auto 1rem;
 }
 
 .valuesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
   margin-top: 3rem;
 }
 
 .valueCard {
-  background: white;
-  padding: 2rem;
+  background: var(--color-background);
+  padding: 2.5rem 2rem;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-medium);
   text-align: center;
-  transition: var(--transition);
-  border: 1px solid var(--border-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .valueCard:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-large);
-  border-color: var(--accent-gold);
+  border-color: var(--color-accent);
 }
 
 .valueIcon {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  background: var(--gradient-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: white;
+  transition: transform 0.3s ease;
 }
 
-.valueCard h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-dark);
-  margin-bottom: 0.75rem;
+.valueCard:hover .valueIcon {
+  transform: scale(1.1);
 }
 
-.valueCard p {
-  color: var(--text-muted);
-  line-height: 1.6;
-  font-size: 0.95rem;
+.valueTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.valueDescription {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  flex-grow: 1;
+}
+
+.features {
+  margin-top: 4rem;
+}
+
+.features h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.featureCard {
+  background: var(--color-background);
+  padding: 2.5rem 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-medium);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.featureCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-large);
+  border-color: var(--color-accent);
+}
+
+.featureIcon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  background: var(--gradient-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.1);
+}
+
+.featureTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.featureDescription {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  flex-grow: 1;
+}
+
+.featureDescriptionArabic {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-top: 0.5rem;
+  font-family: 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .hero {
+    padding: 4rem 0;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .content {
+    max-width: 1400px;
+    padding: 0 2rem;
+  }
+  
+  .section {
+    padding: 2.5rem;
+  }
+  
+  .section h2,
+  .features h2 {
+    font-size: 2.2rem;
+  }
+  
+  .valuesGrid,
+  .featuresGrid {
+    gap: 2rem;
+  }
+  
+  .valueCard,
+  .featureCard {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .title {
+    font-size: 2.2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.15rem;
+  }
+  
+  .section {
+    padding: 2rem;
+  }
+  
+  .section h2,
+  .features h2 {
+    font-size: 2rem;
+  }
+  
+  .section p {
+    font-size: 1.05rem;
+  }
+  
+  .valuesGrid,
+  .featuresGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+  }
+  
   .title {
     font-size: 2rem;
   }
@@ -122,20 +300,149 @@
     font-size: 1.1rem;
   }
   
-  .section h2 {
-    font-size: 1.5rem;
+  .content {
+    padding: 0 1.5rem;
   }
   
-  .section p {
+  .section {
+    padding: 1.75rem;
+    margin-bottom: 3rem;
+  }
+  
+  .section h2,
+  .features h2 {
+    font-size: 1.8rem;
+  }
+  
+  .valuesGrid,
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .valueCard,
+  .featureCard {
+    padding: 1.75rem 1.5rem;
+  }
+  
+  .valueIcon,
+  .featureIcon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+  
+  .valueTitle,
+  .featureTitle {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 2.5rem 0;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
     font-size: 1rem;
   }
   
-  .valuesGrid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .content {
+    padding: 0 1rem;
   }
   
-  .valueCard {
+  .section {
     padding: 1.5rem;
   }
+  
+  .section h2,
+  .features h2 {
+    font-size: 1.6rem;
+  }
+  
+  .valuesGrid,
+  .featuresGrid {
+    gap: 1.25rem;
+  }
+  
+  .valueCard,
+  .featureCard {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .valueIcon,
+  .featureIcon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .valueTitle,
+  .featureTitle {
+    font-size: 1.2rem;
+  }
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] .aboutPage {
+  background: var(--color-background);
+}
+
+[data-theme="dark"] .hero {
+}
+
+[data-theme="dark"] .section {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .section h2 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .section p {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .valueCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .valueCard:hover {
+  border-color: var(--color-accent);
+}
+
+[data-theme="dark"] .valueTitle {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .valueDescription {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .featureCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .featureCard:hover {
+  border-color: var(--color-accent);
+}
+
+[data-theme="dark"] .featureTitle {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .featureDescription {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .featureDescriptionArabic {
+  color: var(--color-text-secondary);
 }

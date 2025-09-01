@@ -11,69 +11,140 @@
 
 .hero {
   text-align: center;
-  padding: 4rem 0;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 5rem 0;
+  background: var(--gradient-primary);
   margin-bottom: 3rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-large);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 1rem;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--color-text-inverse);
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, #f9fafb, #fde047);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .subtitle {
-  font-size: 1.25rem;
-  color: var(--text-light);
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 0.5rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.7;
 }
 
 .servicesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 4rem;
 }
 
 .serviceCard {
-  background: var(--bg-primary);
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-soft);
+  background: var(--color-background);
+  padding: 2.5rem 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-medium);
   text-align: center;
-  transition: var(--transition);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .serviceCard:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-medium);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-large);
+  border-color: var(--color-accent);
 }
 
 .serviceIcon {
-  font-size: 2.5rem;
-  color: var(--accent-orange);
-  margin-bottom: 1.5rem;
+  font-size: 3rem;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.serviceCard:hover .serviceIcon {
+  transform: scale(1.1);
 }
 
 .serviceCard h3 {
   font-size: 1.5rem;
-  color: var(--text-dark);
-  margin-bottom: 1rem;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
 .serviceCard p {
-  color: var(--text-light);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 0;
+  flex-grow: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .hero {
+    padding: 4rem 0;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .servicesGrid {
+    gap: 2rem;
+  }
+  
+  .serviceCard {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .title {
+    font-size: 2.2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.15rem;
+  }
+  
+  .servicesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+  }
+  
   .title {
     font-size: 2rem;
   }
@@ -85,9 +156,62 @@
   .servicesGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    margin-bottom: 3rem;
   }
   
   .serviceCard {
-    padding: 1.5rem;
+    padding: 1.75rem 1.5rem;
   }
+  
+  .serviceIcon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 2.5rem 0;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .servicesGrid {
+    gap: 1.25rem;
+  }
+  
+  .serviceCard {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .serviceCard h3 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] .hero {
+  /* background: var(--gradient-primary);  - 重复定义，已在全局主题中设置 */
+}
+
+[data-theme="dark"] .serviceCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .serviceCard:hover {
+  border-color: var(--color-accent);
+}
+
+[data-theme="dark"] .serviceCard h3 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .serviceCard p {
+  color: var(--color-text-secondary);
 }

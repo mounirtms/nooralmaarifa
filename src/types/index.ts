@@ -101,8 +101,39 @@ export interface RouteConfig {
 
 // Utility types
 export type Language = 'en' | 'ar';
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'system';
+export type EffectiveTheme = 'light' | 'dark';
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+
+// Theme management types
+export interface ThemeContextType {
+  theme: Theme;
+  effectiveTheme: EffectiveTheme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+}
+
+export interface ThemeConfig {
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    surface: string;
+    text: string;
+    textSecondary: string;
+    border: string;
+    error: string;
+    warning: string;
+    success: string;
+    info: string;
+  };
+  shadows: {
+    small: string;
+    medium: string;
+    large: string;
+  };
+}
 
 // Firebase related types
 export interface FirebaseConfig {

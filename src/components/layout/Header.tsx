@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styles from './Header.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 
 interface NavItem {
   path: string;
@@ -69,9 +70,9 @@ export const Header: React.FC = () => {
         <nav className={styles.navbar}>
           {/* Logo */}
           <Link to="/" className={styles.logo}>
-            <ImageWithFallback 
-              src="/images/LOGOICON.png" 
-              alt="Noor Al Maarifa Trading" 
+            <ImageWithFallback
+              src="/images/LOGOICON.png"
+              alt="Noor Al Maarifa Trading"
               className={styles.logoImg}
             />
             <span className={styles.logoText}>Noor Al Maarifa</span>
@@ -83,9 +84,8 @@ export const Header: React.FC = () => {
               <li key={item.path}>
                 <Link
                   to={item.path}
-                  className={`${styles.navLink} ${
-                    isActivePath(item.path) ? styles.active : ''
-                  }`}
+                  className={`${styles.navLink} ${isActivePath(item.path) ? styles.active : ''
+                    }`}
                 >
                   {item.label} | {item.labelAr}
                 </Link>
@@ -95,6 +95,9 @@ export const Header: React.FC = () => {
 
           {/* User Info & Actions */}
           <div className={styles.headerActions}>
+            {/* Theme Toggle */}
+            <ThemeToggle className={styles.themeToggle} />
+
             {user && isAdmin && (
               <div className={styles.userDropdown}>
                 <button
@@ -189,16 +192,23 @@ export const Header: React.FC = () => {
                   >
                     <Link
                       to={item.path}
-                      className={`${styles.mobileNavLink} ${
-                        isActivePath(item.path) ? styles.active : ''
-                      }`}
+                      className={`${styles.mobileNavLink} ${isActivePath(item.path) ? styles.active : ''
+                        }`}
                     >
                       {item.label} | {item.labelAr}
                     </Link>
                   </motion.li>
                 ))}
-                
 
+                {/* Theme Toggle in Mobile Menu */}
+                <motion.li
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className={styles.mobileThemeToggle}
+                >
+                  <ThemeToggle showLabel={true} />
+                </motion.li>
               </ul>
             </motion.div>
           )}

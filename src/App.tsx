@@ -4,9 +4,11 @@ import { AuthProvider } from './contexts/AuthContext';
 import { GalleryProvider } from './contexts/GalleryContext';
 import { ContactProvider } from './contexts/ContactContext';
 import { ContentProvider } from './contexts/ContentContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { preloadCritical } from './utils/preloader';
 import { updatePageSEO, businessStructuredData } from './utils/seo';
+import './utils/adminSetup'; // Import admin utilities for debugging
 //import { initializePerformanceMonitoring } from './utils/performance';
 
 function App() {
@@ -29,15 +31,17 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <GalleryProvider>
-          <ContactProvider>
-            <ContentProvider>
-              <AppRouter />
-            </ContentProvider>
-          </ContactProvider>
-        </GalleryProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <GalleryProvider>
+            <ContactProvider>
+              <ContentProvider>
+                <AppRouter />
+              </ContentProvider>
+            </ContactProvider>
+          </GalleryProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

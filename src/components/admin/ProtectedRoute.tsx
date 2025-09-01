@@ -14,18 +14,28 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { user, loading, isAdmin } = useAuth();
 
+  console.log('🛡️ ProtectedRoute check:', {
+    user: user ? { email: user.email, isAdmin: user.isAdmin } : null,
+    loading,
+    isAdmin,
+    requireAdmin
+  });
+
   // Show loading spinner while checking authentication
   if (loading) {
+    console.log('⏳ Still loading authentication...');
     return <PageLoadingSpinner />;
   }
 
   // If no user is logged in, show admin login
   if (!user) {
+    console.log('❌ No user logged in, showing login');
     return <AdminLogin />;
   }
 
   // If admin access is required but user is not admin
   if (requireAdmin && !isAdmin) {
+    console.log('🚫 Access denied - requireAdmin:', requireAdmin, 'isAdmin:', isAdmin);
     return (
       <div style={{
         minHeight: '80vh',

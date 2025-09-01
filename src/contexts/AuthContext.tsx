@@ -31,17 +31,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUserData = async (firebaseUser: FirebaseUser): Promise<User> => {
     try {
+      console.log('🔍 Fetching user data for:', firebaseUser.email);
       const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
       const userData = userDoc.data();
+      console.log('📄 User document data:', userData);
       
       const adminEmails = [
         'admin@nooralmaarifa.com',
         'sales@nooralmaarifa.com',
         'info@nooralmaarifa.com',
         'mounir@nooralmaarifa.com'
+        // Add your email here temporarily if needed:
+        // 'your-email@example.com'
       ];
       
-      const newIsAdmin = adminEmails.includes(firebaseUser.email || '') || userData?.isAdmin || false;
+      const emailMatch = adminEmails.includes(firebaseUser.email || '');
+      const docAdmin = userData?.isAdmin || false;
+      const newIsAdmin = emailMatch || docAdmin;
+      
+      console.log('🔐 Admin check:', {
+        email: firebaseUser.email,
+        emailMatch,
+        docAdmin,
+        finalIsAdmin: newIsAdmin,
+        adminEmails
+      });
+      
       setIsAdmin(newIsAdmin);
       
       return {
@@ -54,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         lastLoginAt: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('❌ Error fetching user data:', error);
       
       const adminEmails = [
         'admin@nooralmaarifa.com',
@@ -63,6 +78,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         'mounir@nooralmaarifa.com'
       ];
       const newIsAdmin = adminEmails.includes(firebaseUser.email || '');
+      console.log('🔐 Fallback admin check:', {
+        email: firebaseUser.email,
+        isAdmin: newIsAdmin,
+        adminEmails
+      });
       setIsAdmin(newIsAdmin);
       
       return {
@@ -114,12 +134,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
           const userData = await fetchUserData(firebaseUser);
           setUser(userData);
+          console.log('✅ User data set:', userData);
         } catch (error) {
-          console.error('Error setting user data:', error);
+          console.error('❌ Error setting user data:', error);
           setUser(null);
           setIsAdmin(false);
         }
       } else {
+        console.log('👤 No user, clearing state');
         setUser(null);
         setIsAdmin(false);
       }
