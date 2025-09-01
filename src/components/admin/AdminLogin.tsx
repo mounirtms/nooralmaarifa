@@ -1,171 +1,145 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/config/firebase';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'react-hot-toast';
+import { Navigate } from 'react-router-dom';
+import { Eye, EyeOff, Lock, Mail, Shield } from 'lucide-react';
 import styles from './AdminLogin.module.css';
 
 export const AdminLogin: React.FC = () => {
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { user } = useAuth();
+
+  // Redirect if already logged in
+  if (user) {
+    return <Navigate to="/admin" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!credentials.email || !credentials.password) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(credentials.email)) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-
-    // Password validation
-    if (credentials.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-
     setLoading(true);
+    setError('');
+
     try {
-      await signIn(credentials.email, credentials.password);
-      toast.success('Login successful!');
-    } catch (error: any) {
-      if (error.code === 'auth/user-not-found') {
-        toast.error('No admin account found with this email');
-      } else if (error.code === 'auth/wrong-password') {
-        toast.error('Incorrect password');
-      } else if (error.code === 'auth/invalid-email') {
-        toast.error('Invalid email address');
-      } else if (error.code === 'auth/too-many-requests') {
-        toast.error('Too many failed attempts. Please try again later');
-      } else {
-        toast.error('Authentication failed. Please check your credentials');
+      await signInWithEmailAndPassword(auth, email, password);
+      // Navigation will be handled by the auth context
+    } catch (err: any) {
+      console.error('Login error:', err);
+
+      // Handle specific Firebase auth errors
+      switch (err.code) {
+        case 'auth/user-not-found':
+          setError('لا يوجد مستخدم بهذا البريد الإلكتروني');
+          break;
+        case 'auth/wrong-password':
+          setError('كلمة المرور غير صحيحة');
+          break;
+        case 'auth/invalid-email':
+          setError('البريد الإلكتروني غير صحيح');
+          break;
+        case 'auth/too-many-requests':
+          setError('تم تجاوز عدد المحاولات المسموح، يرجى المحاولة لاحقاً');
+          break;
+        default:
+          setError('حدث خطأ في تسجيل الدخول، يرجى المحاولة مرة أخرى');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCredentials(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   return (
     <div className={styles.loginContainer}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={styles.loginCard}
-      >
+      <div className={styles.loginCard}>
         <div className={styles.loginHeader}>
-          <div className={styles.logoSection}>
-            <img 
-              src="/images/LOGOICON.png" 
-              alt="Noor Al Maarifa Trading" 
-              className={styles.logo}
-            />
-            <h1>Admin Login</h1>
-            <p>نور المعرفة للتجارة - دخول المدير</p>
+          <div className={styles.iconContainer}>
+            <Shield className={styles.shieldIcon} size={32} />
           </div>
+          <h1 className={styles.title}>لوحة التحكم</h1>
+          <p className={styles.subtitle}>تسجيل الدخول للوصول إلى لوحة الإدارة</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.loginForm}>
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Admin Email</label>
-            <div className={styles.inputGroup}>
-              <i className="fas fa-user"></i>
+          {error && (
+            <div className={styles.errorMessage}>
+              <span>{error}</span>
+            </div>
+          )}
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="email" className={styles.label}>
+              البريد الإلكتروني
+            </label>
+            <div className={styles.inputWrapper}>
+              <Mail className={styles.inputIcon} size={20} />
               <input
-                type="email"
                 id="email"
-                name="email"
-                value={credentials.email}
-                onChange={handleInputChange}
-                placeholder="admin@nooralmaarifa.com"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={styles.input}
+                placeholder="أدخل البريد الإلكتروني"
                 required
-                disabled={loading}
                 autoComplete="email"
+                disabled={loading}
               />
             </div>
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="password">Password</label>
-            <div className={styles.inputGroup}>
-              <i className="fas fa-lock"></i>
+          <div className={styles.inputGroup}>
+            <label htmlFor="password" className={styles.label}>
+              كلمة المرور
+            </label>
+            <div className={styles.inputWrapper}>
+              <Lock className={styles.inputIcon} size={20} />
               <input
-                type={showPassword ? 'text' : 'password'}
                 id="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleInputChange}
-                placeholder="Enter your secure password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={styles.input}
+                placeholder="أدخل كلمة المرور"
                 required
-                disabled={loading}
                 autoComplete="current-password"
+                disabled={loading}
               />
               <button
                 type="button"
-                className={styles.togglePassword}
                 onClick={() => setShowPassword(!showPassword)}
+                className={styles.passwordToggle}
                 disabled={loading}
+                aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
               >
-                <i className={showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
           <button
             type="submit"
-            className={styles.loginButton}
-            disabled={loading || !credentials.email || !credentials.password}
+            className={styles.submitButton}
+            disabled={loading || !email || !password}
           >
             {loading ? (
-              <>
-                <div className={styles.spinner}></div>
-                Authenticating...
-              </>
+              <span className={styles.loading}>
+                جاري تسجيل الدخول...
+              </span>
             ) : (
-              <>
-                <i className="fas fa-sign-in-alt"></i>
-                Sign In
-              </>
+              'تسجيل الدخول'
             )}
           </button>
         </form>
 
-        <div className={styles.securityInfo}>
-          <div className={styles.securityItem}>
-            <i className="fas fa-shield-alt"></i>
-            <span>Secured by Firebase Auth</span>
-          </div>
-          <div className={styles.securityItem}>
-            <i className="fas fa-lock"></i>
-            <span>256-bit SSL Encryption</span>
-          </div>
-        </div>
-
-        <div className={styles.loginFooter}>
-          <p>
-            <i className="fas fa-info-circle"></i>
-            Only authorized administrators can access this panel
+        <div className={styles.footer}>
+          <p className={styles.footerText}>
+            نظام إدارة نور المعرفة - محمي بأمان Firebase
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
-
-export default AdminLogin;

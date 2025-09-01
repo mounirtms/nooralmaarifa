@@ -391,67 +391,67 @@
     padding: 0 2rem;
     gap: 3.5rem;
   }
-  
+
   .heroTitle {
     font-size: 3.5rem;
   }
-  
+
   .heroTitleArabic {
     font-size: 2.2rem;
   }
-  
+
   .heroSubtitle {
     font-size: 1.3rem;
   }
-  
+
   .heroSubtitleArabic {
     font-size: 1.2rem;
   }
-  
+
   .aboutSection,
   .servicesSection {
     padding: 6rem 0;
   }
-  
+
   .ctaSection {
     padding: 6rem 0;
   }
-  
+
   .sectionTitle {
     font-size: 2.5rem;
   }
-  
+
   .sectionSubtitle {
     font-size: 1.2rem;
   }
-  
+
   .aboutGrid,
   .servicesGrid {
     gap: 2rem;
     padding: 0 2rem;
   }
-  
+
   .featureCard,
   .serviceCard {
     padding: 2rem 1.75rem;
   }
-  
+
   .featureIcon,
   .serviceIcon {
     width: 70px;
     height: 70px;
     font-size: 1.8rem;
   }
-  
+
   .featureTitle,
   .serviceTitle {
     font-size: 1.4rem;
   }
-  
+
   .ctaTitle {
     font-size: 2.5rem;
   }
-  
+
   .ctaDescription {
     font-size: 1.2rem;
   }
@@ -463,37 +463,37 @@
     text-align: center;
     gap: 3rem;
   }
-  
+
   .heroText {
     max-width: 100%;
     margin: 0 auto;
   }
-  
+
   .heroButtons,
   .ctaButtons {
     justify-content: center;
   }
-  
+
   .heroTitle {
     font-size: 3rem;
   }
-  
+
   .heroTitleArabic {
     font-size: 2rem;
   }
-  
+
   .heroImage {
     order: -1;
   }
-  
+
   .sectionTitle {
     font-size: 2.2rem;
   }
-  
+
   .ctaTitle {
     font-size: 2.2rem;
   }
-  
+
   .aboutGrid,
   .servicesGrid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -505,95 +505,95 @@
     padding: 5rem 0;
     min-height: auto;
   }
-  
+
   .heroContent {
     padding: 0 1.5rem;
   }
-  
+
   .heroTitle {
     font-size: 2.5rem;
   }
-  
+
   .heroTitleArabic {
     font-size: 1.8rem;
   }
-  
+
   .heroSubtitle {
     font-size: 1.15rem;
   }
-  
+
   .heroSubtitleArabic {
     font-size: 1.05rem;
   }
-  
+
   .heroButtons {
     flex-direction: column;
     gap: 1.25rem;
   }
-  
+
   .btn {
     width: 100%;
     padding: 1rem 2rem;
   }
-  
+
   .aboutSection,
   .servicesSection,
   .ctaSection {
     padding: 5rem 0;
   }
-  
+
   .sectionHeader {
     margin-bottom: 3rem;
   }
-  
+
   .sectionTitle,
   .ctaTitle {
     font-size: 2rem;
   }
-  
+
   .sectionSubtitle,
   .ctaDescription {
     font-size: 1.1rem;
   }
-  
+
   .ctaTitleArabic {
     font-size: 1.7rem;
   }
-  
+
   .ctaDescriptionArabic {
     font-size: 1.05rem;
   }
-  
+
   .aboutGrid,
   .servicesGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     padding: 0 1.5rem;
   }
-  
+
   .featureCard,
   .serviceCard {
     padding: 1.75rem 1.5rem;
   }
-  
+
   .featureIcon,
   .serviceIcon {
     width: 65px;
     height: 65px;
     font-size: 1.7rem;
   }
-  
+
   .featureTitle,
   .serviceTitle {
     font-size: 1.3rem;
   }
-  
+
   .ctaButtons {
     flex-direction: column;
     gap: 1.25rem;
     margin-top: 2rem;
   }
-  
+
   .ctaButtons .btn {
     width: 100%;
     max-width: 300px;
@@ -605,74 +605,74 @@
   .heroSection {
     padding: 4rem 0;
   }
-  
+
   .heroContent {
     padding: 0 1rem;
   }
-  
+
   .heroTitle {
     font-size: 2.2rem;
   }
-  
+
   .heroTitleArabic {
     font-size: 1.6rem;
   }
-  
+
   .heroSubtitle {
     font-size: 1.05rem;
   }
-  
+
   .heroSubtitleArabic {
     font-size: 1rem;
   }
-  
+
   .btn {
     padding: 0.9rem 1.8rem;
     font-size: 0.95rem;
   }
-  
+
   .aboutSection,
   .servicesSection,
   .ctaSection {
     padding: 4rem 0;
   }
-  
+
   .sectionHeader {
     margin-bottom: 2.5rem;
   }
-  
+
   .sectionTitle,
   .ctaTitle {
     font-size: 1.8rem;
   }
-  
+
   .sectionSubtitle,
   .ctaDescription {
     font-size: 1rem;
   }
-  
+
   .ctaTitleArabic {
     font-size: 1.5rem;
   }
-  
+
   .aboutGrid,
   .servicesGrid {
     padding: 0 1rem;
     gap: 1.25rem;
   }
-  
+
   .featureCard,
   .serviceCard {
     padding: 1.5rem 1.25rem;
   }
-  
+
   .featureIcon,
   .serviceIcon {
     width: 60px;
     height: 60px;
     font-size: 1.5rem;
   }
-  
+
   .featureTitle,
   .serviceTitle {
     font-size: 1.2rem;
@@ -681,34 +681,76 @@
 
 /* Dark Theme Adjustments */
 [data-theme="dark"] .heroSection {
+  background: var(--gradient-warm);
+  color: var(--color-text);
+  transition: var(--transition-theme);
 }
 
-[data-theme="dark"] .aboutSection,
-[data-theme="dark"] .servicesSection {
+[data-theme="dark"] .heroTitle {
+  color: var(--color-text);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .heroSubtitle {
+  color: var(--color-text-secondary);
+}
+
+.ctaButton {
+  background: var(--gradient-brand);
+  color: white;
+  border: none;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-brand);
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+.serviceCard {
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-6);
+  transition: var(--transition-theme);
+  box-shadow: var(--shadow-sm);
 }
 
-[data-theme="dark"] .featureCard {
-  background: var(--color-surface);
-  border-color: var(--color-border);
-}
-
-[data-theme="dark"] .featureCard:hover {
+.serviceCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
   border-color: var(--color-accent);
 }
 
-[data-theme="dark"] .featureTitle {
+.serviceIcon {
+  color: var(--color-accent);
+  margin-bottom: var(--space-4);
+}
+
+.serviceTitle {
   color: var(--color-text);
+  margin-bottom: var(--space-3);
 }
 
-[data-theme="dark"] .featureDescription {
+.serviceDescription {
   color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
-[data-theme="dark"] .featureDescriptionArabic {
-  color: var(--color-text-secondary);
-}
-
+/* Dark Theme Specific */
 [data-theme="dark"] .serviceCard {
   background: var(--color-surface);
   border-color: var(--color-border);
@@ -716,21 +758,7 @@
 
 [data-theme="dark"] .serviceCard:hover {
   border-color: var(--color-accent);
-}
-
-[data-theme="dark"] .serviceTitle {
-  color: var(--color-text);
-}
-
-[data-theme="dark"] .serviceDescription {
-  color: var(--color-text-secondary);
-}
-
-[data-theme="dark"] .serviceDescriptionArabic {
-  color: var(--color-text-secondary);
-}
-
-[data-theme="dark"] .ctaSection {
+  box-shadow: var(--shadow-lg);
 }
 
 [data-theme="dark"] .sectionSubtitle {
