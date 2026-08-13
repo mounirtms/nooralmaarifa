@@ -7,15 +7,34 @@ service cloud.firestore {
         request.auth.token.email == 'mounir.webdev.tms@gmail.com';
     }
 
+    function isValidContactSubmission() {
+      return request.resource.data.keys().hasAll(['name', 'email', 'message', 'timestamp', 'status']) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() <= 100 &&
+        request.resource.data.email is string &&
+        request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$') &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() > 0 &&
+        request.resource.data.message.size() <= 2000 &&
+        request.resource.data.status == 'new';
+    }
+
     // CMS content: public read, admin-only write
     match /content/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Contact messages: anyone may submit, only admins may read/update/delete
+    // Events: public read, admin-only write
+    match /events/{eventId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Contact messages: anyone may submit a valid message, only admins may read/update/delete
     match /contacts/{messageId} {
-      allow create: if true;
+      allow create: if isValidContactSubmission();
       allow read, update, delete: if isAdmin();
     }
 
