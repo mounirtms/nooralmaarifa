@@ -41,6 +41,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({
         aria-checked={isDark}
       >
         <div className={styles.iconContainer}>
+          {/* Animated background slider */}
+          <div 
+            className={`${styles.slider} ${isDark ? styles.sliderDark : styles.sliderLight}`}
+            aria-hidden="true"
+          />
           {/* Sun Icon */}
           <Sun 
             size={16} 
@@ -70,12 +75,6 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({
             {getThemeLabel()}
           </span>
         )}
-        
-        {/* Animated background slider */}
-        <div 
-          className={`${styles.slider} ${isDark ? styles.sliderDark : styles.sliderLight}`}
-          aria-hidden="true"
-        />
       </button>
     </div>
   );
