@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 // Hook for handling form state and validation
-export const useForm = <T extends Record<string, any>>(
+export const useForm = <T extends Record<string, unknown>>(
   initialValues: T,
-  validationRules?: Partial<Record<keyof T, (value: any) => string | undefined>>
+  validationRules?: Partial<Record<keyof T, (value: T[keyof T]) => string | undefined>>
 ) => {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({});
 
-  const setValue = (name: keyof T, value: any) => {
+  const setValue = (name: keyof T, value: T[keyof T]) => {
     setValues(prev => ({ ...prev, [name]: value }));
     
     // Clear error when user starts typing
@@ -23,7 +23,7 @@ export const useForm = <T extends Record<string, any>>(
     setTouched(prev => ({ ...prev, [name]: true }));
   };
 
-  const validateField = (name: keyof T, value: any): string | undefined => {
+  const validateField = (name: keyof T, value: T[keyof T]): string | undefined => {
     if (validationRules && validationRules[name]) {
       return validationRules[name]!(value);
     }
@@ -37,7 +37,7 @@ export const useForm = <T extends Record<string, any>>(
     let isValid = true;
 
     Object.keys(validationRules).forEach(key => {
-      const error = validateField(key as keyof T, values[key]);
+      const error = validateField(key as keyof T, values[key as keyof T]);
       if (error) {
         newErrors[key as keyof T] = error;
         isValid = false;
@@ -182,7 +182,7 @@ export const useAsync = <T, E = string>(
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<E | null>(null);
 
-  const execute = async () => {
+  const execute = useCallback(async () => {
     setStatus('pending');
     setData(null);
     setError(null);
@@ -197,13 +197,13 @@ export const useAsync = <T, E = string>(
       setStatus('error');
       throw error;
     }
-  };
+  }, [asyncFunction]);
 
   useEffect(() => {
     if (immediate) {
       execute();
     }
-  }, [immediate]);
+  }, [immediate, execute]);
 
   return { execute, status, data, error, isLoading: status === 'pending' };
 };

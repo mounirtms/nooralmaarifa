@@ -9,13 +9,13 @@ export const GalleryPage: React.FC = () => {
   const { images, loading } = useGallery();
 
   // Sample images if none loaded from Firebase
-  const sampleImages = [
-    { id: '1', url: '/images/products (7).jpeg', title: 'Office Setup', category: 'office' },
-    { id: '2', url: '/images/products (8).jpeg', title: 'Stationery Collection', category: 'products' },
-    { id: '3', url: '/images/products (9).jpeg', title: 'Writing Tools', category: 'products' },
-    { id: '4', url: '/images/stand.jpg', title: 'Exhibition Stand', category: 'events' },
-    { id: '5', url: '/images/stand1.jpg', title: 'Trade Show', category: 'events' },
-    { id: '6', url: '/images/techno_stand.jpeg', title: 'Product Display', category: 'showcases' }
+  const sampleImages: GalleryImage[] = [
+    { id: '1', url: '/images/products (7).jpeg', title: 'Office Setup', category: 'office', uploadedAt: '', uploadedBy: 'system', order: 0 },
+    { id: '2', url: '/images/products (8).jpeg', title: 'Stationery Collection', category: 'products', uploadedAt: '', uploadedBy: 'system', order: 1 },
+    { id: '3', url: '/images/products (9).jpeg', title: 'Writing Tools', category: 'products', uploadedAt: '', uploadedBy: 'system', order: 2 },
+    { id: '4', url: '/images/stand.jpg', title: 'Exhibition Stand', category: 'events', uploadedAt: '', uploadedBy: 'system', order: 3 },
+    { id: '5', url: '/images/stand1.jpg', title: 'Trade Show', category: 'events', uploadedAt: '', uploadedBy: 'system', order: 4 },
+    { id: '6', url: '/images/techno_stand.jpeg', title: 'Product Display', category: 'showcases', uploadedAt: '', uploadedBy: 'system', order: 5 }
   ];
 
   const displayImages = images.length > 0 ? images : sampleImages;
@@ -54,7 +54,7 @@ export const GalleryPage: React.FC = () => {
                   <ImageWithFallback
                     src={image.url}
                     alt={image.title}
-                    fallbackSrc={(image as any).fallbackUrl || '/images/LOGOICON.png'}
+                    fallbackSrc={'/images/LOGOICON.png'}
                     className={styles.galleryImage}
                   />
                   <div className={styles.imageOverlay}>

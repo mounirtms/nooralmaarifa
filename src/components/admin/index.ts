@@ -2,32 +2,13 @@
 export { AdminLogin } from './AdminLogin';
 export { ProtectedRoute } from './ProtectedRoute';
 
-// Admin Types
-export interface AdminUser {
-  uid: string;
-  email: string;
-  displayName: string;
-  isAdmin: boolean;
-  lastLoginAt: string;
-}
+// Admin authorization utilities (centralized in @/config/admin)
+import { getAdminEmails, isAdminEmail, isAdminUser } from '@/config/admin';
 
-export interface AdminSession {
-  user: AdminUser;
-  expiresAt: number;
-  permissions: string[];
-}
+export { getAdminEmails, isAdminEmail, isAdminUser };
 
-// Admin Utilities
-export const ADMIN_EMAILS = [
-  'admin@nooralmaarifa.com',
-  'sales@nooralmaarifa.com',
-  'info@nooralmaarifa.com'
-];
+export const ADMIN_EMAILS = getAdminEmails();
 
-export const isAdminEmail = (email: string): boolean => {
-  return ADMIN_EMAILS.includes(email.toLowerCase());
-};
-
-export const validateAdminAccess = (user: any): boolean => {
-  return user && (user.isAdmin || isAdminEmail(user.email));
+export const validateAdminAccess = (user: { email?: string | null; isAdmin?: boolean } | null): boolean => {
+  return !!user && (user.isAdmin === true || isAdminEmail(user.email));
 };

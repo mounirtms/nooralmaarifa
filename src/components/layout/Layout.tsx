@@ -6,7 +6,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/contexts/AuthContext';
 import styles from './Layout.module.css';
 
-export const Layout: React.FC = () => {
+export const Layout: React.FC = React.memo(() => {
   const { loading } = useAuth();
 
   if (loading) {
@@ -27,4 +27,6 @@ export const Layout: React.FC = () => {
       <Footer />
     </div>
   );
-};
+});
+
+Layout.displayName = 'Layout';

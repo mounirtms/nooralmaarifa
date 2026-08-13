@@ -8,7 +8,7 @@ interface ThemeToggleProps {
   showLabel?: boolean;
 }
 
-export const ThemeToggle: React.FC<ThemeToggleProps> = ({ 
+export const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ 
   className = '', 
   showLabel = false 
 }) => {
@@ -79,4 +79,6 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       </button>
     </div>
   );
-};
+});
+
+ThemeToggle.displayName = 'ThemeToggle';

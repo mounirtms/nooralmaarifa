@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only the authorized admin email may manage site content
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email == 'mounir.webdev.tms@gmail.com';
+    }
+
+    // CMS content: public read, admin-only write
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contact messages: anyone may submit, only admins may read/update/delete
+    match /contacts/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Gallery: public read, admin-only write
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // User metadata: user can read their own, admins manage
+    match /users/{uid} {
+      allow read: if isAdmin() || request.auth != null && request.auth.uid == uid;
+      allow write: if isAdmin() || request.auth != null && request.auth.uid == uid;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -7,7 +7,11 @@ import { toast } from 'react-hot-toast';
 import type { GalleryImage, ContactMessage } from '@/types';
 import styles from './AdminDashboard.module.css';
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  onNavigate?: (tab: string) => void;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const { messages } = useContact();
   const { images } = useGallery();
@@ -59,6 +63,10 @@ export const AdminDashboard: React.FC = () => {
   ];
 
   const unreadMessages = messages.filter((msg: ContactMessage) => msg.status === 'new').length;
+
+  const navigateTo = (tab: string) => {
+    onNavigate?.(tab);
+  };
 
   const recentActivity = [
     ...messages.slice(0, 3).map(msg => ({
@@ -185,9 +193,9 @@ export const AdminDashboard: React.FC = () => {
             <h2>Quick Actions</h2>
           </div>
           <div className={styles.actionsList}>
-            <button 
+            <button
               className={styles.actionBtn}
-              onClick={() => toast.success('Navigating to messages...')}
+              onClick={() => navigateTo('messages')}
             >
               <i className="fas fa-envelope"></i>
               <span>View Messages</span>
@@ -195,30 +203,30 @@ export const AdminDashboard: React.FC = () => {
                 <div className={styles.badge}>{unreadMessages}</div>
               )}
             </button>
-            <button 
+            <button
               className={styles.actionBtn}
-              onClick={() => toast.success('Opening gallery manager...')}
+              onClick={() => navigateTo('gallery')}
             >
               <i className="fas fa-images"></i>
               <span>Manage Gallery</span>
             </button>
-            <button 
+            <button
               className={styles.actionBtn}
-              onClick={() => toast.success('Opening content editor...')}
+              onClick={() => navigateTo('content')}
             >
               <i className="fas fa-edit"></i>
               <span>Edit Content</span>
             </button>
-            <button 
+            <button
               className={styles.actionBtn}
-              onClick={() => toast.success('Opening analytics...')}
+              onClick={() => navigateTo('analytics')}
             >
               <i className="fas fa-chart-bar"></i>
               <span>View Analytics</span>
             </button>
-            <button 
+            <button
               className={styles.actionBtn}
-              onClick={() => toast.success('Opening settings...')}
+              onClick={() => navigateTo('settings')}
             >
               <i className="fas fa-cog"></i>
               <span>Settings</span>

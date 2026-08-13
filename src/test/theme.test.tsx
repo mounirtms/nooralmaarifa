@@ -106,6 +106,7 @@ describe('Theme System', () => {
     it('should detect theme support correctly', () => {
       expect(supportsThemeDetection()).toBe(true);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (window as any).matchMedia;
       expect(supportsThemeDetection()).toBe(false);
     });

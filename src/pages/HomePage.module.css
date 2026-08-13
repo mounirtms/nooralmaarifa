@@ -1,5 +1,6 @@
 .homePage {
   width: 100%;
+  max-width: 100%;
 }
 
 /* Hero Section */
@@ -12,6 +13,7 @@
   position: relative;
   padding: 6rem 0;
   overflow: hidden;
+  width: 100%;
 }
 
 .heroSection::before {
@@ -31,7 +33,7 @@
   gap: 4rem;
   align-items: center;
   width: 100%;
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 2.5rem;
 }
@@ -139,6 +141,7 @@
 .servicesSection {
   padding: 7rem 0;
   background: var(--color-surface);
+  width: 100%;
 }
 
 .ctaSection {
@@ -146,11 +149,13 @@
   background: var(--gradient-primary);
   color: var(--color-text-inverse);
   text-align: center;
+  width: 100%;
 }
 
 .sectionHeader {
   text-align: center;
   margin-bottom: 4.5rem;
+  padding: 0 1rem;
 }
 
 .sectionTitle {
@@ -182,7 +187,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2.5rem;
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 2.5rem;
 }
@@ -251,7 +256,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2.5rem;
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 2.5rem;
 }
@@ -387,7 +392,7 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .heroContent {
-    max-width: 1400px;
+    max-width: 100%;
     padding: 0 2rem;
     gap: 3.5rem;
   }
@@ -695,6 +700,15 @@
   color: var(--color-text-secondary);
 }
 
+[data-theme="dark"] .aboutSection,
+[data-theme="dark"] .servicesSection {
+  background: var(--color-background);
+}
+
+[data-theme="dark"] .ctaSection {
+  background: var(--gradient-brand);
+}
+
 .ctaButton {
   background: var(--gradient-brand);
   color: white;
@@ -763,4 +777,133 @@
 
 [data-theme="dark"] .sectionSubtitle {
   color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .featureCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .featureCard:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Events & Promotions Section */
+.eventsSection {
+  padding: 7rem 0;
+  background: var(--color-background);
+  width: 100%;
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+.eventCard {
+  background: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-medium);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.eventCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-large);
+  border-color: var(--color-accent);
+}
+
+.eventCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.eventIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.eventDate {
+  background: var(--color-accent);
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--border-radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.eventTitle {
+  font-size: 1.3rem;
+  margin: 0;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.eventDescription {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.eventDescriptionArabic {
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin: 0;
+  font-family: 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+
+.eventLocation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.eventLocation i {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .eventCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .eventCard:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 992px) {
+  .eventsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 0 2rem;
+  }
 }

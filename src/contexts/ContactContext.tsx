@@ -1,21 +1,24 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
   collection,
   getDocs,
   addDoc,
   updateDoc,
+  deleteDoc,
   doc,
   query,
   orderBy,
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { isAdminUser } from '@/config/admin';
 import type { ContactMessage, ContactContextType } from '@/types';
 import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 
 const ContactContext = createContext<ContactContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useContact = () => {
   const context = useContext(ContactContext);
   if (context === undefined) {
@@ -32,9 +35,10 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const isAdmin = isAdminUser(user);
 
-  const fetchMessages = async (): Promise<void> => {
-    if (!user || !user.isAdmin) {
+  const fetchMessages = useCallback(async (): Promise<void> => {
+    if (!user || !isAdmin) {
       return; // Only admins can fetch all messages
     }
 
@@ -60,7 +64,7 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, isAdmin]);
 
   const submitMessage = async (
     messageData: Omit<ContactMessage, 'id' | 'timestamp' | 'status'>
@@ -80,12 +84,12 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
       toast.success('Message sent successfully! We will get back to you soon.');
       
       // If user is admin, refresh the messages list
-      if (user && user.isAdmin) {
+      if (user && isAdmin) {
         await fetchMessages();
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error submitting message:', error);
-      toast.error(error.message || 'Failed to send message');
+      toast.error(error instanceof Error ? error.message : 'Failed to send message');
       throw error;
     } finally {
       setLoading(false);
@@ -97,7 +101,7 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
     status: ContactMessage['status'],
     adminNotes?: string
   ): Promise<void> => {
-    if (!user || !user.isAdmin) {
+    if (!user || !isAdmin) {
       throw new Error('Admin access required to update message status');
     }
 
@@ -116,9 +120,9 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
       await fetchMessages();
       
       toast.success('Message status updated successfully!');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating message status:', error);
-      toast.error(error.message || 'Failed to update message status');
+      toast.error(error instanceof Error ? error.message : 'Failed to update message status');
       throw error;
     } finally {
       setLoading(false);
@@ -126,7 +130,7 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
   };
 
   const setFollowUpDate = async (id: string, date: string): Promise<void> => {
-    if (!user || !user.isAdmin) {
+    if (!user || !isAdmin) {
       throw new Error('Admin access required to set follow-up date');
     }
 
@@ -140,9 +144,28 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
       await fetchMessages();
       
       toast.success('Follow-up date set successfully!');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error setting follow-up date:', error);
-      toast.error(error.message || 'Failed to set follow-up date');
+      toast.error(error instanceof Error ? error.message : 'Failed to set follow-up date');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteMessage = async (id: string): Promise<void> => {
+    if (!user || !isAdmin) {
+      throw new Error('Admin access required to delete message');
+    }
+
+    try {
+      setLoading(true);
+      await deleteDoc(doc(db, 'contacts', id));
+      setMessages(prev => prev.filter(msg => msg.id !== id));
+      toast.success('Message deleted successfully');
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to delete message');
       throw error;
     } finally {
       setLoading(false);
@@ -151,12 +174,12 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
 
   // Auto-fetch messages when user changes and is admin
   useEffect(() => {
-    if (user && user.isAdmin) {
+    if (user && isAdmin) {
       fetchMessages();
     } else {
       setMessages([]); // Clear messages if not admin
     }
-  }, [user]);
+  }, [user, isAdmin, fetchMessages]);
 
   const value: ContactContextType = {
     messages,
@@ -164,6 +187,7 @@ export const ContactProvider: React.FC<ContactProviderProps> = ({ children }) =>
     submitMessage,
     updateMessageStatus,
     setFollowUpDate,
+    deleteMessage,
     fetchMessages,
   };
 

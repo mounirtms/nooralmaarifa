@@ -62,8 +62,8 @@ export const isValidEmail = (email: string): boolean => {
 };
 
 export const isValidPhone = (phone: string): boolean => {
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-  return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+  const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
+  return phoneRegex.test(phone.replace(/[\s\-()]/g, ''));
 };
 
 export const isValidUrl = (url: string): boolean => {
@@ -224,7 +224,7 @@ export const setQueryParam = (name: string, value: string): void => {
 };
 
 // Performance utilities
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: never[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void => {
@@ -236,7 +236,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   };
 };
 
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: never[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void => {
@@ -287,7 +287,7 @@ export const downloadFile = (url: string, filename?: string): void => {
 };
 
 export const downloadCatalog = (): void => {
-  downloadFile('https://bit.ly/NoorAlmaarifaCatalog2026', 'Noor-Al-Maarifa-Catalog-2026.pdf');
+  downloadFile('https://technostationery.com/media/files/ProductsCatalog2026.pdf', 'Noor-Al-Maarifa-Catalog-2026.pdf');
 };
 
 // SEO utilities
@@ -296,8 +296,8 @@ export * from './seo';
 // Analytics and tracking utilities
 export const trackPageView = (pageName: string): void => {
   // Google Analytics tracking
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('config', 'GA_MEASUREMENT_ID', {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('config', 'GA_MEASUREMENT_ID', {
       page_title: pageName,
       page_location: window.location.href
     });
@@ -307,10 +307,10 @@ export const trackPageView = (pageName: string): void => {
   console.log(`Page view tracked: ${pageName}`);
 };
 
-export const trackEvent = (eventName: string, eventData?: Record<string, any>): void => {
+export const trackEvent = (eventName: string, eventData?: Record<string, unknown>): void => {
   // Google Analytics event tracking
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', eventName, {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
       ...eventData,
       timestamp: new Date().toISOString()
     });

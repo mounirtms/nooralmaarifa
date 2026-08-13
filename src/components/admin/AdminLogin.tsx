@@ -27,11 +27,14 @@ export const AdminLogin: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // Navigation will be handled by the auth context
-    } catch (err: any) {
+    } catch (err) {
       console.error('Login error:', err);
 
       // Handle specific Firebase auth errors
-      switch (err.code) {
+      const code = err instanceof Error && 'code' in err
+        ? (err as { code?: string }).code
+        : undefined;
+      switch (code) {
         case 'auth/user-not-found':
           setError('لا يوجد مستخدم بهذا البريد الإلكتروني');
           break;

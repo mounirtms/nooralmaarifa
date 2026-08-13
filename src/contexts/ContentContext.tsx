@@ -1,5 +1,12 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
+import { db } from '@/config/firebase';
 
 export interface ServiceItem {
   id: string;
@@ -36,34 +43,55 @@ export interface CompanyInfo {
   lastUpdated: string;
 }
 
+export interface EventItem {
+  id: string;
+  icon: string;
+  title: string;
+  titleAr: string;
+  description: string;
+  descriptionAr: string;
+  date: string;
+  location: string;
+  locationAr: string;
+  order: number;
+  isActive: boolean;
+}
+
 interface ContentContextType {
   services: ServiceItem[];
   aboutFeatures: AboutFeature[];
+  events: EventItem[];
   companyInfo: CompanyInfo;
   loading: boolean;
-  
+
   // Service management
   addService: (service: Omit<ServiceItem, 'id' | 'order'>) => Promise<void>;
   updateService: (id: string, updates: Partial<ServiceItem>) => Promise<void>;
   deleteService: (id: string) => Promise<void>;
   reorderServices: (services: ServiceItem[]) => Promise<void>;
-  
+
   // About features management
   addAboutFeature: (feature: Omit<AboutFeature, 'id' | 'order'>) => Promise<void>;
   updateAboutFeature: (id: string, updates: Partial<AboutFeature>) => Promise<void>;
   deleteAboutFeature: (id: string) => Promise<void>;
   reorderAboutFeatures: (features: AboutFeature[]) => Promise<void>;
-  
+
+  // Events management
+  addEvent: (event: Omit<EventItem, 'id' | 'order'>) => Promise<void>;
+  updateEvent: (id: string, updates: Partial<EventItem>) => Promise<void>;
+  deleteEvent: (id: string) => Promise<void>;
+  reorderEvents: (events: EventItem[]) => Promise<void>;
+
   // Company info management
   updateCompanyInfo: (updates: Partial<CompanyInfo>) => Promise<void>;
-  
+
   // Data refresh
   refreshContent: () => Promise<void>;
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
-// Default data
+// Default data used before / instead of Firestore content
 const defaultServices: ServiceItem[] = [
   {
     id: '1',
@@ -163,35 +191,88 @@ const defaultCompanyInfo: CompanyInfo = {
   lastUpdated: new Date().toISOString()
 };
 
+const defaultEvents: EventItem[] = [
+  {
+    id: '1',
+    icon: 'fas fa-calendar-check',
+    title: 'Back to School Promotion',
+    titleAr: 'عروض العودة إلى المدارس',
+    description: 'Special discounts on school essentials and stationery kits for the new academic year.',
+    descriptionAr: 'خصومات خاصة على اللوازم المدرسية ومجموعات القرطاسية للعام الدراسي الجديد.',
+    date: new Date().toISOString(),
+    location: 'Dubai, UAE',
+    locationAr: 'دبي، الإمارات',
+    order: 1,
+    isActive: true
+  },
+  {
+    id: '2',
+    icon: 'fas fa-box-open',
+    title: 'Office Supplies Expo',
+    titleAr: 'معرض اللوازم المكتبية',
+    description: 'Visit our booth to discover the latest office solutions and exclusive trade pricing.',
+    descriptionAr: 'قم بزيارة جناحنا لاكتشاف أحدث الحلول المكتبية وأسعار التجزئة الحصرية.',
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    location: 'Dubai World Trade Centre',
+    locationAr: 'مركز دبي التجاري العالمي',
+    order: 2,
+    isActive: true
+  }
+];
+
+// Firestore document paths (collection "content" with fixed doc ids)
+const servicesDocRef = doc(db, 'content', 'services');
+const aboutFeaturesDocRef = doc(db, 'content', 'aboutFeatures');
+const eventsDocRef = doc(db, 'content', 'events');
+const companyInfoDocRef = doc(db, 'content', 'companyInfo');
+
+const sortByOrder = <T extends { order: number }>(items: T[]): T[] =>
+  [...items].sort((a, b) => a.order - b.order);
+
 export function ContentProvider({ children }: { children: ReactNode }) {
   const [services, setServices] = useState<ServiceItem[]>(defaultServices);
   const [aboutFeatures, setAboutFeatures] = useState<AboutFeature[]>(defaultAboutFeatures);
+  const [events, setEvents] = useState<EventItem[]>(defaultEvents);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(defaultCompanyInfo);
   const [loading, setLoading] = useState(false);
 
-  // Load content from localStorage on mount
-  useEffect(() => {
-    loadContent();
-  }, []);
-
-  const loadContent = async () => {
+  const loadContent = useCallback(async () => {
     try {
       setLoading(true);
-      
-      const savedServices = localStorage.getItem('noor_services');
-      const savedFeatures = localStorage.getItem('noor_about_features');
-      const savedCompanyInfo = localStorage.getItem('noor_company_info');
-      
-      if (savedServices) {
-        setServices(JSON.parse(savedServices));
+
+      const [servicesSnap, featuresSnap, eventsSnap, infoSnap] = await Promise.all([
+        getDoc(servicesDocRef),
+        getDoc(aboutFeaturesDocRef),
+        getDoc(eventsDocRef),
+        getDoc(companyInfoDocRef),
+      ]);
+
+      if (servicesSnap.exists()) {
+        const items = servicesSnap.data()?.items;
+        if (Array.isArray(items) && items.length > 0) {
+          setServices(sortByOrder(items));
+        }
       }
-      
-      if (savedFeatures) {
-        setAboutFeatures(JSON.parse(savedFeatures));
+
+      if (featuresSnap.exists()) {
+        const items = featuresSnap.data()?.items;
+        if (Array.isArray(items) && items.length > 0) {
+          setAboutFeatures(sortByOrder(items));
+        }
       }
-      
-      if (savedCompanyInfo) {
-        setCompanyInfo(JSON.parse(savedCompanyInfo));
+
+      if (eventsSnap.exists()) {
+        const items = eventsSnap.data()?.items;
+        if (Array.isArray(items) && items.length > 0) {
+          setEvents(sortByOrder(items));
+        }
+      }
+
+      if (infoSnap.exists()) {
+        const data = infoSnap.data();
+        if (data && data.name) {
+          setCompanyInfo(data as CompanyInfo);
+        }
       }
     } catch (error) {
       console.error('Error loading content:', error);
@@ -199,22 +280,40 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const saveServices = (updatedServices: ServiceItem[]) => {
-    localStorage.setItem('noor_services', JSON.stringify(updatedServices));
+  useEffect(() => {
+    loadContent();
+  }, [loadContent]);
+
+  const saveServices = useCallback(async (updatedServices: ServiceItem[]) => {
     setServices(updatedServices);
-  };
+    await setDoc(servicesDocRef, {
+      items: updatedServices,
+      updatedAt: serverTimestamp(),
+    });
+  }, []);
 
-  const saveAboutFeatures = (updatedFeatures: AboutFeature[]) => {
-    localStorage.setItem('noor_about_features', JSON.stringify(updatedFeatures));
+  const saveAboutFeatures = useCallback(async (updatedFeatures: AboutFeature[]) => {
     setAboutFeatures(updatedFeatures);
-  };
+    await setDoc(aboutFeaturesDocRef, {
+      items: updatedFeatures,
+      updatedAt: serverTimestamp(),
+    });
+  }, []);
 
-  const saveCompanyInfo = (updatedInfo: CompanyInfo) => {
-    localStorage.setItem('noor_company_info', JSON.stringify(updatedInfo));
+  const saveEvents = useCallback(async (updatedEvents: EventItem[]) => {
+    setEvents(updatedEvents);
+    await setDoc(eventsDocRef, {
+      items: updatedEvents,
+      updatedAt: serverTimestamp(),
+    });
+  }, []);
+
+  const saveCompanyInfo = useCallback(async (updatedInfo: CompanyInfo) => {
     setCompanyInfo(updatedInfo);
-  };
+    await setDoc(companyInfoDocRef, updatedInfo);
+  }, []);
 
   // Service management functions
   const addService = async (service: Omit<ServiceItem, 'id' | 'order'>) => {
@@ -224,9 +323,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         id: Date.now().toString(),
         order: services.length + 1
       };
-      
-      const updatedServices = [...services, newService];
-      saveServices(updatedServices);
+
+      await saveServices([...services, newService]);
       toast.success('Service added successfully');
     } catch (error) {
       console.error('Error adding service:', error);
@@ -239,7 +337,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       const updatedServices = services.map(service =>
         service.id === id ? { ...service, ...updates } : service
       );
-      saveServices(updatedServices);
+      await saveServices(updatedServices);
       toast.success('Service updated successfully');
     } catch (error) {
       console.error('Error updating service:', error);
@@ -250,7 +348,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteService = async (id: string) => {
     try {
       const updatedServices = services.filter(service => service.id !== id);
-      saveServices(updatedServices);
+      await saveServices(updatedServices);
       toast.success('Service deleted successfully');
     } catch (error) {
       console.error('Error deleting service:', error);
@@ -264,7 +362,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         ...service,
         order: index + 1
       }));
-      saveServices(updatedServices);
+      await saveServices(updatedServices);
       toast.success('Services reordered successfully');
     } catch (error) {
       console.error('Error reordering services:', error);
@@ -280,12 +378,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         id: Date.now().toString(),
         order: aboutFeatures.length + 1
       };
-      
-      const updatedFeatures = [...aboutFeatures, newFeature].sort((a, b) => a.order - b.order);
-      setAboutFeatures(updatedFeatures);
-      localStorage.setItem('aboutFeatures', JSON.stringify(updatedFeatures));
-      toast.success('Feature added successfully');datedFeatures = [...aboutFeatures, newFeature];
-      saveAboutFeatures(updatedFeatures);
+
+      await saveAboutFeatures([...aboutFeatures, newFeature]);
       toast.success('Feature added successfully');
     } catch (error) {
       console.error('Error adding feature:', error);
@@ -298,7 +392,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       const updatedFeatures = aboutFeatures.map(feature =>
         feature.id === id ? { ...feature, ...updates } : feature
       );
-      saveAboutFeatures(updatedFeatures);
+      await saveAboutFeatures(updatedFeatures);
       toast.success('Feature updated successfully');
     } catch (error) {
       console.error('Error updating feature:', error);
@@ -309,7 +403,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteAboutFeature = async (id: string) => {
     try {
       const updatedFeatures = aboutFeatures.filter(feature => feature.id !== id);
-      saveAboutFeatures(updatedFeatures);
+      await saveAboutFeatures(updatedFeatures);
       toast.success('Feature deleted successfully');
     } catch (error) {
       console.error('Error deleting feature:', error);
@@ -323,11 +417,66 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         ...feature,
         order: index + 1
       }));
-      saveAboutFeatures(updatedFeatures);
+      await saveAboutFeatures(updatedFeatures);
       toast.success('Features reordered successfully');
     } catch (error) {
       console.error('Error reordering features:', error);
       toast.error('Failed to reorder features');
+    }
+  };
+
+  // Events management functions
+  const addEvent = async (event: Omit<EventItem, 'id' | 'order'>) => {
+    try {
+      const newEvent: EventItem = {
+        ...event,
+        id: Date.now().toString(),
+        order: events.length + 1
+      };
+
+      await saveEvents([...events, newEvent]);
+      toast.success('Event added successfully');
+    } catch (error) {
+      console.error('Error adding event:', error);
+      toast.error('Failed to add event');
+    }
+  };
+
+  const updateEvent = async (id: string, updates: Partial<EventItem>) => {
+    try {
+      const updatedEvents = events.map(event =>
+        event.id === id ? { ...event, ...updates } : event
+      );
+      await saveEvents(updatedEvents);
+      toast.success('Event updated successfully');
+    } catch (error) {
+      console.error('Error updating event:', error);
+      toast.error('Failed to update event');
+    }
+  };
+
+  const deleteEvent = async (id: string) => {
+    try {
+      const updatedEvents = events.filter(event => event.id !== id);
+      await saveEvents(updatedEvents);
+      toast.success('Event deleted successfully');
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast.error('Failed to delete event');
+    }
+  };
+
+  const reorderEvents = async (reorderedEvents: EventItem[]) => {
+    try {
+      const updatedEvents = reorderedEvents.map((event, index) => ({
+        ...event,
+        order: index + 1
+      }));
+      await saveEvents(updatedEvents);
+      toast.success('Events reordered successfully');
+    } catch (error) {
+      console.error('Error reordering events:', error);
+      toast.error('Failed to reorder events');
     }
   };
 
@@ -339,7 +488,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         ...updates,
         lastUpdated: new Date().toISOString()
       };
-      saveCompanyInfo(updatedInfo);
+      await saveCompanyInfo(updatedInfo);
       toast.success('Company information updated successfully');
     } catch (error) {
       console.error('Error updating company info:', error);
@@ -353,8 +502,9 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   };
 
   const value: ContentContextType = {
-    services: services.filter(s => s.isActive).sort((a, b) => a.order - b.order),
-    aboutFeatures: aboutFeatures.filter(f => f.isActive).sort((a, b) => a.order - b.order),
+    services: services.filter(s => s.isActive !== false),
+    aboutFeatures: aboutFeatures.filter(f => f.isActive !== false),
+    events: events.filter(e => e.isActive !== false),
     companyInfo,
     loading,
     addService,
@@ -365,6 +515,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     updateAboutFeature,
     deleteAboutFeature,
     reorderAboutFeatures,
+    addEvent,
+    updateEvent,
+    deleteEvent,
+    reorderEvents,
     updateCompanyInfo,
     refreshContent
   };
@@ -376,6 +530,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useContent() {
   const context = useContext(ContentContext);
   if (context === undefined) {

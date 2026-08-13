@@ -5,6 +5,7 @@ import styles from './Header.module.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { isAdminUser } from '@/config/admin';
 
 interface NavItem {
   path: string;
@@ -26,7 +27,8 @@ export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut } = useAuth();
+  const isAdmin = isAdminUser(user);
   const location = useLocation();
 
   // Handle scroll effect

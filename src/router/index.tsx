@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Suspense } from 'react';
 import { PageLoadingSpinner } from '../components/common/LoadingSpinner';
 import { ErrorBoundary } from '../components/common/ErrorBoundary';
@@ -25,8 +25,9 @@ export interface RouteConfig {
   requiresAdmin?: boolean;
 }
 
-// Router configuration with hash routing for single-page navigation
-const router = createHashRouter([
+// Router configuration with clean URL paths for single-page navigation
+// (Firebase Hosting rewrites route all requests to index.html)
+const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
@@ -106,6 +107,7 @@ export function AppRouter() {
 }
 
 // Navigation configuration for components (using lazy components)
+// eslint-disable-next-line react-refresh/only-export-components
 export const navigationRoutes: RouteConfig[] = [
   {
     path: '/',
@@ -188,4 +190,5 @@ export const navigationRoutes: RouteConfig[] = [
   },
 ];
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default router;

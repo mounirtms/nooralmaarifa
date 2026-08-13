@@ -24,6 +24,7 @@ export function LazyWrapper({
 }
 
 // Higher-order component for creating lazy-loaded components
+// eslint-disable-next-line react-refresh/only-export-components
 export function withLazyLoading<P extends object>(
   Component: ComponentType<P>,
   fallback?: ReactNode,
@@ -39,46 +40,46 @@ export function withLazyLoading<P extends object>(
 }
 
 // Utility function to create lazy components with proper error boundaries
-export function createLazyComponent<T extends ComponentType<any>>(
-  importFn: () => Promise<{ default: T } | { [key: string]: T }>,
+// eslint-disable-next-line react-refresh/only-export-components
+export function createLazyComponent<T extends ComponentType<Record<string, unknown>>>(
+  importFn: () => Promise<{ default: T } | Record<string, T>>,
   exportName?: string
 ) {
   return lazy(async () => {
     try {
       const module = await importFn();
-      
+
       // Handle both default and named exports
       if (exportName && exportName in module) {
-        return { default: (module as any)[exportName] };
+        return { default: (module as Record<string, T>)[exportName] };
       }
-      
+
       // If it's already a default export
       if ('default' in module) {
         return module as { default: T };
       }
-      
+
       // If it's a named export and no exportName provided, try to find the component
       const keys = Object.keys(module);
       const componentKey = keys.find(key => 
-        typeof (module as any)[key] === 'function' && 
+        typeof (module as Record<string, T>)[key] === 'function' && 
         key !== 'default'
       );
-      
+
       if (componentKey) {
-        return { default: (module as any)[componentKey] };
+        return { default: (module as Record<string, T>)[componentKey] };
       }
-      
+
       throw new Error('No valid component export found');
     } catch (error) {
       console.error('Error loading lazy component:', error);
       // Return a fallback component
-      return {
-        default: () => (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <p>Error loading component. Please refresh the page.</p>
-          </div>
-        )
-      };
+      const Fallback = (() => (
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <p>Error loading component. Please refresh the page.</p>
+        </div>
+      )) as unknown as T;
+      return { default: Fallback };
     }
   });
 }

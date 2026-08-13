@@ -74,5 +74,5 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock scrollTo
-window.scrollTo = vi.fn() as any;
+window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
 export {};

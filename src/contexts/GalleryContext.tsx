@@ -18,7 +18,7 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { db, storage } from '@/config/firebase';
-import type { GalleryImage } from '@/types';
+import type { GalleryImage, GalleryContextType } from '@/types';
 import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 
@@ -40,8 +40,9 @@ const fallbackImages = [
   '/images/products (14).jpeg'
 ];
 
-const GalleryContext = createContext<any | undefined>(undefined);
+const GalleryContext = createContext<GalleryContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useGallery = () => {
   const context = useContext(GalleryContext);
   if (context === undefined) {

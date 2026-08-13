@@ -11,8 +11,9 @@ export const HomePage: React.FC = () => {
   const { ref: heroRef, inView: heroInView } = useScrollAnimation();
   const { ref: aboutRef, inView: aboutInView } = useScrollAnimation();
   const { ref: servicesRef, inView: servicesInView } = useScrollAnimation();
+  const { ref: eventsRef, inView: eventsInView } = useScrollAnimation();
   
-  const { services, aboutFeatures, companyInfo } = useContent();
+  const { services, aboutFeatures, events, companyInfo } = useContent();
   
   useEffect(() => {
     // Update SEO for homepage
@@ -211,6 +212,62 @@ export const HomePage: React.FC = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Events & Promotions Section */}
+      {events.length > 0 && (
+        <section ref={eventsRef} className={styles.eventsSection}>
+          <div className="container">
+            <motion.div
+              className={styles.sectionHeader}
+              initial={{ opacity: 0, y: 30 }}
+              animate={eventsInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className={styles.sectionTitle}>Events & Promotions | الفعاليات والعروض</h2>
+              <p className={styles.sectionSubtitle}>
+                Stay updated with our latest offers, exhibitions, and announcements
+              </p>
+              <p className={styles.sectionSubtitleArabic}>
+                تابع آخر عروضنا وفعالياتنا وإعلاناتنا
+              </p>
+            </motion.div>
+
+            <div className={styles.eventsGrid}>
+              {events.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  className={styles.eventCard}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={eventsInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <div className={styles.eventCardHeader}>
+                    <div className={styles.eventIcon}>
+                      <i className={event.icon}></i>
+                    </div>
+                    <span className={styles.eventDate}>
+                      {new Date(event.date).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                  <h3 className={styles.eventTitle}>
+                    {event.title} | {event.titleAr}
+                  </h3>
+                  <p className={styles.eventDescription}>{event.description}</p>
+                  <p className={styles.eventDescriptionArabic}>{event.descriptionAr}</p>
+                  <div className={styles.eventLocation}>
+                    <i className="fas fa-map-marker-alt"></i>
+                    <span>{event.location} | {event.locationAr}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className={styles.ctaSection}>

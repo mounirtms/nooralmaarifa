@@ -1,13 +1,13 @@
 // Preloader utility for lazy-loaded components
 export class ComponentPreloader {
   private static preloadedComponents = new Set<string>();
-  private static preloadPromises = new Map<string, Promise<any>>();
+  private static preloadPromises = new Map<string, Promise<unknown>>();
 
   // Preload a component by its import function
   static async preload(
     key: string,
-    importFn: () => Promise<any>
-  ): Promise<void> {
+    importFn: () => Promise<unknown>
+  ): Promise<unknown> {
     if (this.preloadedComponents.has(key)) {
       return;
     }
@@ -36,7 +36,7 @@ export class ComponentPreloader {
   static async preloadMultiple(
     components: Array<{
       key: string;
-      importFn: () => Promise<any>;
+      importFn: () => Promise<unknown>;
     }>
   ): Promise<void> {
     const promises = components.map(({ key, importFn }) =>
@@ -103,7 +103,7 @@ export const preloadHeavy = () =>
 export const preloadOnInteraction = (
   element: HTMLElement,
   key: string,
-  importFn: () => Promise<any>
+  importFn: () => Promise<unknown>
 ) => {
   let preloaded = false;
 

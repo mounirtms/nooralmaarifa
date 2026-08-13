@@ -86,6 +86,7 @@ export interface ContactContextType {
   submitMessage: (message: Omit<ContactMessage, 'id' | 'timestamp' | 'status'>) => Promise<void>;
   updateMessageStatus: (id: string, status: ContactMessage['status'], adminNotes?: string) => Promise<void>;
   setFollowUpDate: (id: string, date: string) => Promise<void>;
+  deleteMessage: (id: string) => Promise<void>;
   fetchMessages: () => Promise<void>;
 }
 
@@ -178,7 +179,7 @@ export interface FormField {
 }
 
 // API response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -221,6 +222,6 @@ export interface SEOConfig {
 
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }

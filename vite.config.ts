@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { splitVendorChunkPlugin } from 'vite';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
   
   return {
@@ -49,9 +49,6 @@ export default defineConfig(({ command, mode }) => {
             'admin': ['./src/pages/AdminPage.tsx'],
           },
           assetFileNames: (assetInfo) => {
-            const info = assetInfo.name!.split('.');
-            const ext = info[info.length - 1];
-            
             if (/\.(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(assetInfo.name!)) {
               return `images/[name]-[hash][extname]`;
             }

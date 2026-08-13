@@ -8,7 +8,6 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { preloadCritical } from './utils/preloader';
 import { updatePageSEO, businessStructuredData } from './utils/seo';
-import './utils/adminSetup'; // Import admin utilities for debugging
 //import { initializePerformanceMonitoring } from './utils/performance';
 
 function App() {

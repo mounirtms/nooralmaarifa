@@ -2,11 +2,12 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { 
   User, 
   onAuthStateChanged, 
-  signOut,
+  signOut as firebaseSignOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { auth } from '@/config/firebase';
+import { isAdminUser } from '@/config/admin';
 
 interface AuthContextType {
   user: User | null;
@@ -14,10 +15,13 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  signOut: () => Promise<void>; // Add missing signOut property
+  isAdmin: boolean; // Add missing isAdmin property
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
@@ -63,12 +67,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async (): Promise<void> => {
     try {
-      await signOut(auth);
+      await firebaseSignOut(auth);
     } catch (error) {
       console.error('Logout error:', error);
       throw error;
     }
   };
+
+  // Add signOut as an alias to logout
+  const signOut = async (): Promise<void> => {
+    return logout();
+  };
+
+  const isAdmin = isAdminUser(user);
 
   const value: AuthContextType = {
     user,
@@ -76,6 +87,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     register,
     logout,
+    signOut, // Add signOut to the context value
+    isAdmin // Add isAdmin to the context value
   };
 
   return (
