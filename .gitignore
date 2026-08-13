@@ -70,3 +70,6 @@ node_modules/
 
 # Playwright MCP test artifacts
 .playwright-mcp/
+
+# Local secrets (Firebase admin service account keys, .env, etc.)
+.secrets/

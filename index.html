@@ -6,6 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noor Al Maarifa Trading L.L.C - Premium Stationery & Office Supplies Dubai | نور المعرفة للتجارة</title>
 
+    <!-- Apply theme before first paint to prevent flash of wrong theme -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('noor-al-maarifa-theme');
+          var theme = ['light', 'dark', 'system'].indexOf(stored) !== -1 ? stored : 'system';
+          var dark = theme === 'dark' ||
+            (theme === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var el = document.documentElement;
+          el.setAttribute('data-theme', dark ? 'dark' : 'light');
+          el.classList.add(dark ? 'dark' : 'light');
+          el.classList.remove(dark ? 'light' : 'dark');
+        } catch (e) { /* ignore */ }
+      })();
+    </script>
+
     <!-- Enhanced SEO Meta Tags -->
     <meta name="description" content="Noor Al Maarifa Trading L.L.C - Leading premium stationery and office supplies provider in Dubai, UAE. Quality products for businesses across the Middle East. لوازم قرطاسية ومكاتب عالية الجودة في دبي والإمارات">
     <meta name="keywords" content="noor al maarifa, stationery Dubai, office supplies UAE, trading company Dubai, premium stationery, business supplies, قرطاسية دبي, لوازم مكاتب الإمارات, نور المعرفة للتجارة">
@@ -56,7 +72,8 @@
     <link rel="manifest" href="/manifest.json">
     
     <!-- Theme color -->
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     
     <!-- Performance optimizations -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">

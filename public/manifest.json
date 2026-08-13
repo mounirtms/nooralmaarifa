@@ -1,0 +1,27 @@
+{
+  "name": "Noor Al Maarifa Trading L.L.C - Premium Stationery & Office Supplies Dubai",
+  "short_name": "Noor Al Maarifa",
+  "description": "Leading premium stationery and office supplies provider in Dubai, UAE. نور المعرفة للتجارة",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/images/LOGOICON.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/LOGOICON.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
